@@ -3,9 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Views;
+package views;
 
-import Controllers.GestorUsuario;
+import controllers.GestorUsuario;
 import dto.UsuarioDTO;
 import messages.Util;
 import dto.UsuarioDTO;

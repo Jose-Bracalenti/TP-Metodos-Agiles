@@ -1,5 +1,5 @@
 //import Mappers.CargadorDatos;
-import Views.Inicio;
+import views.Inicio;
 import javax.persistence.*;
 import javax.swing.JFrame;
 //import messages.Util;
