@@ -17,7 +17,7 @@ import javax.persistence.*;
 
 @Entity
 @Table (name = "HistoricoLicencia")
-class HistoricoLicencia implements Serializable{
+public class HistoricoLicencia implements Serializable{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column (name = "id")

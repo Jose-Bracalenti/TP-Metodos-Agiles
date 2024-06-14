@@ -3,13 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package views;
+package Views;
 
-import controllers.GestorUsuario;
+import Controllers.GestorUsuario;
 import dto.UsuarioDTO;
 import messages.Util;
 import dto.UsuarioDTO;
-import javax.persistence.EntityManager;
 import javax.swing.JOptionPane;
 import messages.Util;
 
@@ -27,9 +26,6 @@ public class Inicio extends javax.swing.JFrame {
         initComponents();
     }
     
-    public Inicio (EntityManager entityManager){
-        initComponents();
-    }
     
     //Funcion para comprobar que un string es un numero
     public boolean isInteger(String numero){
@@ -77,7 +73,7 @@ public class Inicio extends javax.swing.JFrame {
         jLabel_Contrasenia1.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jLabel_Contrasenia1.setText("Rol:");
 
-        boxRol.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        boxRol.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "OPERADOR", "ADMINISTRADOR" }));
         boxRol.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 boxRolActionPerformed(evt);
@@ -111,7 +107,7 @@ public class Inicio extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(txtContrasenia, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(txtNroDocumento, javax.swing.GroupLayout.DEFAULT_SIZE, 164, Short.MAX_VALUE)
+                                .addComponent(txtNroDocumento)
                                 .addComponent(jLabel_Documento, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addComponent(jLabel_Contrasenia, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGroup(layout.createSequentialGroup()

@@ -7,9 +7,9 @@ import javax.persistence.metamodel.StaticMetamodel;
 import models.entities.AccionRealizarEnum;
 import models.entities.Licencia;
 
-@Generated(value="EclipseLink-2.5.2.v20140319-rNA", date="2024-06-11T19:14:41")
+@Generated(value="EclipseLink-2.5.2.v20140319-rNA", date="2024-06-13T18:17:18")
 @StaticMetamodel(RegistroTramite.class)
- class RegistroTramite_ { 
+public class RegistroTramite_ { 
 
     public static volatile SingularAttribute<RegistroTramite, AccionRealizarEnum> accion;
     public static volatile SingularAttribute<RegistroTramite, Date> fecha;

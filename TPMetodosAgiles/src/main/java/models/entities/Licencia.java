@@ -20,7 +20,7 @@ import javax.persistence.*;
 
 @Entity
 @Table (name = "Licencia")
-class Licencia implements Serializable{
+public class Licencia implements Serializable{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")

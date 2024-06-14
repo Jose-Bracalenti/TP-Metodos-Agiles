@@ -3,12 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package controllers;
+package Controllers;
 
 
-import dao.UsuarioDAO;
+
 import dao.UsuarioDAOImpl;
-import dto.UsuarioDTO;
 import models.entities.Usuario;
 import dto.UsuarioDTO;
 import javax.swing.JOptionPane;
@@ -19,15 +18,13 @@ import javax.swing.JOptionPane;
  */
 public class GestorUsuario {
     
-    private static GestorUsuario _INSTANCE;
-    private UsuarioDAO usuarioDAO;
-    Usuario usuario;
+    private final UsuarioDAOImpl usuarioDAOImpl = new UsuarioDAOImpl();
     
     
     public UsuarioDTO buscarUsuario(String nroDocumento, String contrasenia, String rol){
         try {
             //Buscamos el usuario
-            Usuario usuario = usuarioDAO.buscarUsuario(nroDocumento, contrasenia, rol).get(0);
+            Usuario usuario = usuarioDAOImpl.buscarUsuario(nroDocumento, contrasenia, rol).get(0);
             if(usuario != null){
                 //Pasamos de usuario a usuarioDTO
                 UsuarioDTO usuarioDTO = new UsuarioDTO();
@@ -40,7 +37,6 @@ public class GestorUsuario {
         }
         
         return null;
-        // prueba 2 
     }
     
 }

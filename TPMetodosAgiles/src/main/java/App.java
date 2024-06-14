@@ -1,7 +1,8 @@
 //import Mappers.CargadorDatos;
-import views.Inicio;
-import javax.persistence.*;
+import Views.Inicio;
+import dto.TitularDTO;
 import javax.swing.JFrame;
+import views.EmitirLicencia;
 //import messages.Util;
 //import views.*;
 
@@ -10,13 +11,11 @@ public class App {
         JFrame pantalla;
         try {
             // Inicio del Programa
-  //          CargadorDatos cargadorDatos = new CargadorDatos();
-            EntityManagerFactory managerFactory = Persistence.createEntityManagerFactory("PersistenciaTP");
-            EntityManager manager = managerFactory.createEntityManager();
+            //CargadorDatos cargadorDatos = new CargadorDatos();
             
             //cargadorDatos.cargarDatos(manager);
-            
-           pantalla = new Inicio(manager);
+
+           pantalla = new Inicio();
            pantalla.setVisible(true);
            pantalla.setLocationRelativeTo(null);
         } catch (Exception e) {

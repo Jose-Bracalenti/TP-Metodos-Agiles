@@ -17,7 +17,7 @@ import javax.persistence.*;
 
 @Entity
 @Table (name = "RegistroTramite")
-class RegistroTramite implements Serializable{
+public class RegistroTramite implements Serializable{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column (name = "id")

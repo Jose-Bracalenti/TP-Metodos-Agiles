@@ -1,19 +1,20 @@
 package dao;
 
 import Mappers.MyValidationException;
+import Mappers.UtilHibernate;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
+import javax.swing.JOptionPane;
 import messages.Util;
+import models.entities.RolEnum;
+import models.entities.Titular;
 import models.entities.Usuario;
 
 public class UsuarioDAOImpl implements UsuarioDAO {
 
-    private final EntityManager entityManager;
+    private final EntityManager entityManager = UtilHibernate.getInstance().getEntityManager();
     
-    public UsuarioDAOImpl(EntityManager entityManager) {
-        this.entityManager = entityManager;
-    }
     
     @Override
     public void alta(Usuario usuario) {
@@ -35,8 +36,9 @@ public class UsuarioDAOImpl implements UsuarioDAO {
     @Override
     public List<Usuario> buscarAll (){
         try{
-            String consulta = "SELECT u FROM Umpleado u";
+            String consulta = "SELECT u FROM Usuario u";
             TypedQuery<Usuario> query = (TypedQuery<Usuario>) entityManager.createQuery(consulta);
+            JOptionPane.showMessageDialog(null,query.getResultList()); 
             return query.getResultList();
         } catch (Exception e){
             throw new MyValidationException("Error: Buscar Empleado", e);
@@ -46,6 +48,15 @@ public class UsuarioDAOImpl implements UsuarioDAO {
 
     @Override
     public List<Usuario> buscarUsuario(String nroDocumento, String contrasenia, String rol) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        try{
+            String consulta = "SELECT u FROM Usuario u WHERE u.numeroDocumento = :numeroDocumento AND u.contrasenia = :contrasenia AND u.rol = :rol";
+            TypedQuery<Usuario> query = (TypedQuery<Usuario>) entityManager.createQuery(consulta);
+            query.setParameter("numeroDocumento", nroDocumento);
+            query.setParameter("contrasenia", contrasenia);
+            query.setParameter("rol", RolEnum.valueOf(rol));
+            return query.getResultList();
+        } catch (Exception e){
+            throw new MyValidationException("Error: Buscar Usuario", e);
+        }
     }
 }

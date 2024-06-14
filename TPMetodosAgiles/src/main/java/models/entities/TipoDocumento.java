@@ -19,7 +19,7 @@ import javax.persistence.*;
 
 @Entity
 @Table (name = "TipoDocumento")
-class TipoDocumento implements Serializable{
+public class TipoDocumento implements Serializable{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column (name = "id")
