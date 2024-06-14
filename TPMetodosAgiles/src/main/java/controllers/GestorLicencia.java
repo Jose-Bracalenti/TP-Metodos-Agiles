@@ -54,16 +54,13 @@ public class GestorLicencia {
     
     private Licencia crearLicencia(LicenciaDTO licenciaDTO){
         Licencia licencia = new Licencia();
+        licencia.setTitular(licenciaDTO.getTitular());
         licencia.setClaseLicencia(licenciaDTO.getClase());
         licencia.setFechaInicioVigencia(licenciaDTO.getFechaInicioVigencia());
         licencia.setFechaFinVigencia(licenciaDTO.getFechaFinVigencia());
         licencia.setNroCopia(licenciaDTO.getNumeroCopia());
         licencia.setNroLicencia(Long.parseLong(licenciaDTO.getNumeroLicencia()));
         licencia.setObservacion(licenciaDTO.getObservacion());
-        
-        //TENGO QUE AGREGAR QUE SE AGREGUE LA LICENCIA A LA LISTA DE LICENCIAS QUE TIENE CADA CLASE LICENCIA, QUE CREO SERÏA ALGO ASI
-        licenciaDTO.getClase().getLicencias().add(licencia); //creo que se podría hacer algo así (?)
-        //NO SE POR QUE ME SIGUE TIRANDO ERROR CON LA PRIMARY KEY, PUEDE SER POR LO QUE ME FALTA QUE PUSE AHI ARRIBA
         
         return licencia;
     }

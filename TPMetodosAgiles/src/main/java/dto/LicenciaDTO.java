@@ -7,12 +7,14 @@ package dto;
 
 import java.util.Date;
 import models.entities.ClaseLicencia;
+import models.entities.Titular;
 
 /**
  *
  * @author Juani
  */
 public class LicenciaDTO {
+    private Titular titular;
     private ClaseLicencia clase;
     private Date fechaInicioVigencia;
     private Date fechaFinVigencia;
@@ -23,13 +25,22 @@ public class LicenciaDTO {
     public LicenciaDTO() {
     }
 
-    public LicenciaDTO(ClaseLicencia clase, Date fechaInicioVigencia, Date fechaFinVigencia, Integer numeroCopia, String observacion, String numeroLicencia) {
+    public LicenciaDTO(Titular titular, ClaseLicencia clase, Date fechaInicioVigencia, Date fechaFinVigencia, Integer numeroCopia, String observacion, String numeroLicencia) {
+        this.titular = titular;
         this.clase = clase;
         this.fechaInicioVigencia = fechaInicioVigencia;
         this.fechaFinVigencia = fechaFinVigencia;
         this.numeroCopia = numeroCopia;
         this.observacion = observacion;
         this.numeroLicencia = numeroLicencia;
+    }
+
+    public Titular getTitular() {
+        return titular;
+    }
+
+    public void setTitular(Titular titular) {
+        this.titular = titular;
     }
 
     public ClaseLicencia getClase() {

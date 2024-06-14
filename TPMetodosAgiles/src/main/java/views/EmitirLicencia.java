@@ -98,7 +98,7 @@ public class EmitirLicencia extends javax.swing.JFrame {
         
         
     } catch(ValidationException ve){
-        Util.mensajeAdvertencia("Advertencia: Mostrar Localidades", ve.getMessage());
+        Util.mensajeAdvertencia("Advertencia: Mostrar Clases", ve.getMessage());
     } catch(Exception e){
         Util.mensajeError("Error: Mostrar Clases", "Hubo un error: \n" + e.getMessage());
     }
@@ -414,6 +414,7 @@ public class EmitirLicencia extends javax.swing.JFrame {
                     Date dateFin = formatter.parse(txtFinVigencia.getText());
                
                     LicenciaDTO licenciaDTO = new LicenciaDTO();
+                    licenciaDTO.setTitular(gestorTitular.buscarTitular(titularDTO).get(0));
                     licenciaDTO.setClase(gestorLicencia.mostrarClases(clase).get(0));
                     licenciaDTO.setFechaInicioVigencia(dateInicio);
                     licenciaDTO.setFechaFinVigencia(dateFin);
@@ -422,9 +423,9 @@ public class EmitirLicencia extends javax.swing.JFrame {
                     licenciaDTO.setObservacion(txtObservaciones.getText());
                     
                     if (gestorLicencia.altaLicencia(licenciaDTO)) {
-                        Mappers.Util.mensajeInformacion("Exito", "Se ha creado la póliza con éxtio");
+                        Mappers.Util.mensajeInformacion("Exito", "Se ha emitido la licencia con éxtio");
                     } else {
-                        Mappers.Util.mensajeInformacion("Error", "No se ha creado la póliza con éxtio");
+                        Mappers.Util.mensajeInformacion("Error", "No se ha emitido la licencia con éxtio");
                     }
                
                 //JFrame pantalla = new AltaTitular2(licenciaDTO, entityManager);

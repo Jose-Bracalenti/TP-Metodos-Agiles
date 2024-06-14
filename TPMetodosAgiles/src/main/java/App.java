@@ -14,8 +14,11 @@ public class App {
             //CargadorDatos cargadorDatos = new CargadorDatos();
             
             //cargadorDatos.cargarDatos(manager);
-
-           pantalla = new Inicio();
+           TitularDTO titularDTO = new TitularDTO();
+           titularDTO.setNombre("Juan Ignacio");
+           titularDTO.setApellido("Gomez Llorens");
+           titularDTO.setNroDoc("44444444");
+           pantalla = new EmitirLicencia(titularDTO);
            pantalla.setVisible(true);
            pantalla.setLocationRelativeTo(null);
         } catch (Exception e) {
