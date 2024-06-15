@@ -7,7 +7,7 @@ import javax.persistence.metamodel.StaticMetamodel;
 import models.entities.Titular;
 import models.entities.Usuario;
 
-@Generated(value="EclipseLink-2.5.2.v20140319-rNA", date="2024-06-14T12:01:38")
+@Generated(value="EclipseLink-2.5.2.v20140319-rNA", date="2024-06-15T13:05:54")
 @StaticMetamodel(TipoDocumento.class)
 public class TipoDocumento_ { 
 

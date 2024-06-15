@@ -15,6 +15,7 @@ import java.util.Date;
 import java.util.List;
 import javax.persistence.EntityManager;
 import models.entities.ClaseLicencia;
+import models.entities.HistoricoLicencia;
 import models.entities.Licencia;
 
 /**
@@ -63,5 +64,9 @@ public class GestorLicencia {
         licencia.setObservacion(licenciaDTO.getObservacion());
         
         return licencia;
+    }
+
+    public List<Licencia> buscarLicencia(TitularDTO titularDTO) {
+        return licenciaImpl.buscarByTitularDTO(titularDTO);
     }
 }

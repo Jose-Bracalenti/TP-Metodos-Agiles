@@ -73,13 +73,8 @@ public class EmitirLicencia extends javax.swing.JFrame {
     public void mostrarFechasVigencia(TitularDTO titularDTO){
         this.titularDTO = titularDTO;
         try{
-            /*txtInicioVigencia.setText(gestorLicencia.mostrarInicioVigencia(titularDTO).get(0).toString());
-            txtFinVigencia.setText(gestorLicencia.mostrarFinVigencia(titularDTO).get(0).toString());*/
-            
-            //Le hardcodeo la fecha para ver chequear que ande todo, lo de arriba sería en realidad lo que habría que hacer (puse
-            // los metodos de calcular la vigencia en el gestor pero no se donde irian).
-            txtInicioVigencia.setText("15/06/2024");
-            txtFinVigencia.setText("15/06/2025");       
+            txtInicioVigencia.setText(calcularInicioVigencia());
+            txtFinVigencia.setText(calcularFinVigencia(titularDTO));     
             
         } catch (ValidationException ve) {
             Util.mensajeAdvertencia("Advertencia: Mostrar Titular", ve.getMessage());
@@ -108,15 +103,8 @@ public class EmitirLicencia extends javax.swing.JFrame {
         boolean validez;
             
         Titular titular = gestorTitular.buscarTitular(titularDTO).get(0);
-        Date currentDate = new Date();
-       
-        Calendar calendar1 = Calendar.getInstance();
-        calendar1.setTime(titular.getFechaNacimiento());
             
-        Calendar calendar2 = Calendar.getInstance();
-        calendar2.setTime(currentDate);
-            
-        int edad=calcularEdad(calendar1,calendar2);
+        int edad=calcularEdad(titular);
         String clase = (String) boxClase.getSelectedItem();
             
         if (clase.equals("C") || clase.equals("D") || clase.equals("E")){
@@ -129,7 +117,15 @@ public class EmitirLicencia extends javax.swing.JFrame {
         return validez;
     }
     
-    public Integer calcularEdad(Calendar calendar1, Calendar calendar2){
+    public Integer calcularEdad(Titular titular){
+        
+        Date currentDate = new Date();
+       
+        Calendar calendar1 = Calendar.getInstance();
+        calendar1.setTime(titular.getFechaNacimiento());
+            
+        Calendar calendar2 = Calendar.getInstance();
+        calendar2.setTime(currentDate);
         
         int yearTitular=calendar1.get(Calendar.YEAR);
         int monthTitular=calendar1.get(Calendar.MONTH)+1;
@@ -145,6 +141,49 @@ public class EmitirLicencia extends javax.swing.JFrame {
         }
         
         return edad;
+    }
+    
+    private String calcularInicioVigencia() {
+        Date currentDate = new Date();
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(currentDate);
+        String fechaInicioVigencia = calendar.get(Calendar.DAY_OF_MONTH)+"/"+(calendar.get(Calendar.MONTH)+1)+"/"+calendar.get(Calendar.YEAR);
+        return fechaInicioVigencia;
+    }
+
+    private String calcularFinVigencia(TitularDTO titularDTO) {
+        Titular titular = gestorTitular.buscarTitular(titularDTO).get(0);
+        Integer edad = calcularEdad(titular);
+        Date currentDate = new Date();
+        Date fechaNacimiento = titular.getFechaNacimiento();
+        Calendar calendar1 = Calendar.getInstance();
+        Calendar calendar2 = Calendar.getInstance();
+        calendar1.setTime(currentDate);
+        calendar2.setTime(fechaNacimiento);
+        String fechaFinVigencia;
+        
+        if (edad<21){
+            if (gestorLicencia.buscarLicencia(titularDTO).isEmpty()){
+                fechaFinVigencia = calendar2.get(Calendar.DAY_OF_MONTH)+"/"+(calendar2.get(Calendar.MONTH)+1)+"/"+(calendar1.get(Calendar.YEAR)+1);
+            }
+            else{
+                fechaFinVigencia = calendar2.get(Calendar.DAY_OF_MONTH)+"/"+(calendar2.get(Calendar.MONTH)+1)+"/"+(calendar1.get(Calendar.YEAR)+3);
+            }
+        }
+        else if (edad<=46){
+            fechaFinVigencia = calendar2.get(Calendar.DAY_OF_MONTH)+"/"+(calendar2.get(Calendar.MONTH)+1)+"/"+(calendar1.get(Calendar.YEAR)+5);
+        }
+        else if (edad<=60){
+            fechaFinVigencia = calendar2.get(Calendar.DAY_OF_MONTH)+"/"+(calendar2.get(Calendar.MONTH)+1)+"/"+(calendar1.get(Calendar.YEAR)+4);
+        }
+        else if (edad<=70){
+            fechaFinVigencia = calendar2.get(Calendar.DAY_OF_MONTH)+"/"+(calendar2.get(Calendar.MONTH)+1)+"/"+(calendar1.get(Calendar.YEAR)+3);
+        }
+        else{
+            fechaFinVigencia = calendar2.get(Calendar.DAY_OF_MONTH)+"/"+(calendar2.get(Calendar.MONTH)+1)+"/"+(calendar1.get(Calendar.YEAR)+1);
+        }
+        
+        return fechaFinVigencia;
     }
     
     @SuppressWarnings("unchecked")
@@ -485,5 +524,6 @@ public class EmitirLicencia extends javax.swing.JFrame {
     private javax.swing.JTextField txtNroDocumento;
     private javax.swing.JTextArea txtObservaciones;
     // End of variables declaration//GEN-END:variables
+
 
 }

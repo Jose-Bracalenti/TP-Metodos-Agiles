@@ -12,7 +12,7 @@ import models.entities.Licencia;
 import models.entities.SexoEnum;
 import models.entities.TipoDocumento;
 
-@Generated(value="EclipseLink-2.5.2.v20140319-rNA", date="2024-06-14T12:01:38")
+@Generated(value="EclipseLink-2.5.2.v20140319-rNA", date="2024-06-15T13:05:54")
 @StaticMetamodel(Titular.class)
 public class Titular_ { 
 

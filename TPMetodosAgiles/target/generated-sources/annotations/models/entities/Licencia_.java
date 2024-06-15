@@ -10,7 +10,7 @@ import models.entities.HistoricoLicencia;
 import models.entities.RegistroTramite;
 import models.entities.Titular;
 
-@Generated(value="EclipseLink-2.5.2.v20140319-rNA", date="2024-06-14T12:01:38")
+@Generated(value="EclipseLink-2.5.2.v20140319-rNA", date="2024-06-15T13:05:54")
 @StaticMetamodel(Licencia.class)
 public class Licencia_ { 
 

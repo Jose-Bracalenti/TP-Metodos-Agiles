@@ -6,6 +6,8 @@
 package dao;
 
 import dto.LicenciaDTO;
+import dto.TitularDTO;
+import java.util.List;
 import models.entities.Licencia;
 
 /**
@@ -14,4 +16,5 @@ import models.entities.Licencia;
  */
 public interface LicenciaDAO {
     void altaLicencia(Licencia licencia);
+    List<Licencia> buscarByTitularDTO(TitularDTO titularDTO);
 }
