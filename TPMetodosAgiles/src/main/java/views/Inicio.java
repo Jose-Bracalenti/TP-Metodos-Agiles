@@ -186,10 +186,11 @@ public class Inicio extends javax.swing.JFrame {
 
         //Corroboramos que no esten vacios
         if(nroDocumento.isEmpty() || contrasenia.isEmpty()){
-            Util.mensajeAdvertencia("Advertencia", "No se permiten campo/s vacío/s");
             pintarInvalidos(nroDocumento, contrasenia, false);
+            Util.mensajeAdvertencia("Advertencia", "No se permiten campo/s vacío/s");
         //Corroboramos que solo haya numeros en nroDocumento
         } else if (!isInteger(nroDocumento)){
+            pintarInvalidos(nroDocumento, contrasenia, false);
             Util.mensajeAdvertencia("Advertencia", "Formato invalido");
         } else {    
             //Buscamos el usuario con ese nroDocumento, contrasenia y rol

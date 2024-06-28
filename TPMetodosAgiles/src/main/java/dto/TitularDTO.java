@@ -5,6 +5,7 @@
  */
 package dto;
 
+import java.util.Date;
 import models.entities.TipoDocumento;
 
 /**
@@ -16,6 +17,7 @@ public class TitularDTO {
     private String nombre;
     private TipoDocumento tipoDoc;
     private String nroDoc;
+    private Date fechaNacimiento;
 
     public TitularDTO() {
     }
@@ -50,6 +52,14 @@ public class TitularDTO {
 
     public void setNroDoc(String nroDoc) {
         this.nroDoc = nroDoc;
+    }
+
+    public Date getFechaNacimiento() {
+        return fechaNacimiento;
+    }
+
+    public void setFechaNacimiento(Date fechaNacimiento) {
+        this.fechaNacimiento = fechaNacimiento;
     }
     
     

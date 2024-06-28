@@ -14,7 +14,7 @@ import models.entities.Titular;
  * @author Juani
  */
 public class LicenciaDTO {
-    private Titular titular;
+    private TitularDTO titularDTO;
     private ClaseLicencia clase;
     private Date fechaInicioVigencia;
     private Date fechaFinVigencia;
@@ -25,8 +25,8 @@ public class LicenciaDTO {
     public LicenciaDTO() {
     }
 
-    public LicenciaDTO(Titular titular, ClaseLicencia clase, Date fechaInicioVigencia, Date fechaFinVigencia, Integer numeroCopia, String observacion, String numeroLicencia) {
-        this.titular = titular;
+    public LicenciaDTO(TitularDTO titularDTO, ClaseLicencia clase, Date fechaInicioVigencia, Date fechaFinVigencia, Integer numeroCopia, String observacion, String numeroLicencia) {
+        this.titularDTO = titularDTO;
         this.clase = clase;
         this.fechaInicioVigencia = fechaInicioVigencia;
         this.fechaFinVigencia = fechaFinVigencia;
@@ -35,12 +35,12 @@ public class LicenciaDTO {
         this.numeroLicencia = numeroLicencia;
     }
 
-    public Titular getTitular() {
-        return titular;
+    public TitularDTO getTitularDTO() {
+        return titularDTO;
     }
 
-    public void setTitular(Titular titular) {
-        this.titular = titular;
+    public void setTitular(TitularDTO titular) {
+        this.titularDTO = titular;
     }
 
     public ClaseLicencia getClase() {

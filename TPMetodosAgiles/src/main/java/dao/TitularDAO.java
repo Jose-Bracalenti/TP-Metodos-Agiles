@@ -7,6 +7,7 @@ package dao;
 
 import dto.TitularDTO;
 import java.util.List;
+import models.entities.TipoDocumento;
 import models.entities.Titular;
 
 /**
@@ -14,6 +15,8 @@ import models.entities.Titular;
  * @author Juani
  */
 public interface TitularDAO {
+    
     List<Titular> buscar(TitularDTO titularDTO);
+    List<TipoDocumento> buscarTipoDoc(String especificacion);
     
 }

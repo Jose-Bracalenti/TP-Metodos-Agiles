@@ -24,6 +24,7 @@ import models.entities.Licencia;
  */
 public class GestorLicencia {
     
+    GestorTitular gestorTitular = new GestorTitular();
     ClaseLicenciaDAOImpl claseImpl = new ClaseLicenciaDAOImpl();
     LicenciaDAOImpl licenciaImpl = new LicenciaDAOImpl();
     
@@ -55,7 +56,7 @@ public class GestorLicencia {
     
     private Licencia crearLicencia(LicenciaDTO licenciaDTO){
         Licencia licencia = new Licencia();
-        licencia.setTitular(licenciaDTO.getTitular());
+        licencia.setTitular(gestorTitular.buscarTitular(licenciaDTO.getTitularDTO()).get(0));
         licencia.setClaseLicencia(licenciaDTO.getClase());
         licencia.setFechaInicioVigencia(licenciaDTO.getFechaInicioVigencia());
         licencia.setFechaFinVigencia(licenciaDTO.getFechaFinVigencia());

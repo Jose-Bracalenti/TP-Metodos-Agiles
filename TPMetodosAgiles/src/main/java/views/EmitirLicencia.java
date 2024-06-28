@@ -13,6 +13,7 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTextArea;
@@ -39,7 +40,7 @@ public class EmitirLicencia extends javax.swing.JFrame {
     public EmitirLicencia() {
         initComponents();
     }
-    public EmitirLicencia (TitularDTO titularDTO){
+    public EmitirLicencia (TitularDTO titular){
         initComponents();
         txtApellidoNombre.setEditable(false);
         txtNroDocumento.setEditable(false);
@@ -49,20 +50,18 @@ public class EmitirLicencia extends javax.swing.JFrame {
         txtNroCopia.setText("0");
         gestorLicencia = new GestorLicencia();
         gestorTitular = new GestorTitular();
-        this.titularDTO = titularDTO;
+        this.titularDTO = titular;
         this.mostrarClase();
-        this.mostrarTitular(titularDTO);
-        this.validarEdad(titularDTO);
-        this.mostrarFechasVigencia(titularDTO);
+        this.mostrarTitular();
+        this.validarEdad();
+        this.mostrarFechasVigencia();
     }
     
-    public void mostrarTitular(TitularDTO titularDTO){
-        this.titularDTO = titularDTO;
+    public void mostrarTitular(){
         try{
-            Titular titular = this.gestorTitular.buscarTitular(titularDTO).get(0);
-            TipoDocumento documento = titular.getTipoDocumento();
-            txtNroDocumento.setText(documento.getEspecificacion() + " / " + titular.getNumeroDocumento());
-            txtApellidoNombre.setText(titular.getApellido() + ", " + titular.getNombre());
+            titularDTO = this.gestorTitular.buscarTitularDTO(titularDTO).get(0);
+            txtNroDocumento.setText(titularDTO.getTipoDoc().getEspecificacion() + " / " + titularDTO.getNroDoc());
+            txtApellidoNombre.setText(titularDTO.getApellido() + ", " + titularDTO.getNombre());
         } catch (ValidationException ve) {
             Util.mensajeAdvertencia("Advertencia: Mostrar Titular", ve.getMessage());
         } catch (Exception e) {
@@ -70,16 +69,15 @@ public class EmitirLicencia extends javax.swing.JFrame {
         }
     }
     
-    public void mostrarFechasVigencia(TitularDTO titularDTO){
-        this.titularDTO = titularDTO;
+    public void mostrarFechasVigencia(){
         try{
             txtInicioVigencia.setText(calcularInicioVigencia());
-            txtFinVigencia.setText(calcularFinVigencia(titularDTO));     
+            txtFinVigencia.setText(calcularFinVigencia());     
             
         } catch (ValidationException ve) {
-            Util.mensajeAdvertencia("Advertencia: Mostrar Titular", ve.getMessage());
+            Util.mensajeAdvertencia("Advertencia: Mostrar Fecha", ve.getMessage());
         } catch (Exception e) {
-            Util.mensajeError("Error: Mostrar Titular", "Hubo un error: \n" + e.getMessage());
+            Util.mensajeError("Error: Mostrar Fecha", "Hubo un error: \n" + e.getMessage());
         }
     }
     
@@ -99,12 +97,13 @@ public class EmitirLicencia extends javax.swing.JFrame {
     }
 }
     
-    public boolean validarEdad(TitularDTO titularDTO) {
+    public boolean validarEdad() {
         boolean validez;
             
-        Titular titular = gestorTitular.buscarTitular(titularDTO).get(0);
-            
-        int edad=calcularEdad(titular);
+        titularDTO = gestorTitular.buscarTitularDTO(titularDTO).get(0);
+        
+        
+        int edad=calcularEdad();
         String clase = (String) boxClase.getSelectedItem();
             
         if (clase.equals("C") || clase.equals("D") || clase.equals("E")){
@@ -117,12 +116,14 @@ public class EmitirLicencia extends javax.swing.JFrame {
         return validez;
     }
     
-    public Integer calcularEdad(Titular titular){
+    public Integer calcularEdad(){
         
         Date currentDate = new Date();
        
         Calendar calendar1 = Calendar.getInstance();
-        calendar1.setTime(titular.getFechaNacimiento());
+        calendar1.setTime(titularDTO.getFechaNacimiento());
+        
+        
             
         Calendar calendar2 = Calendar.getInstance();
         calendar2.setTime(currentDate);
@@ -151,11 +152,11 @@ public class EmitirLicencia extends javax.swing.JFrame {
         return fechaInicioVigencia;
     }
 
-    private String calcularFinVigencia(TitularDTO titularDTO) {
-        Titular titular = gestorTitular.buscarTitular(titularDTO).get(0);
-        Integer edad = calcularEdad(titular);
+    private String calcularFinVigencia() {
+        titularDTO = gestorTitular.buscarTitularDTO(titularDTO).get(0);
+        Integer edad = calcularEdad();
         Date currentDate = new Date();
-        Date fechaNacimiento = titular.getFechaNacimiento();
+        Date fechaNacimiento = titularDTO.getFechaNacimiento();
         Calendar calendar1 = Calendar.getInstance();
         Calendar calendar2 = Calendar.getInstance();
         calendar1.setTime(currentDate);
@@ -439,21 +440,21 @@ public class EmitirLicencia extends javax.swing.JFrame {
 
     private void btnAceptarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAceptarActionPerformed
         try{
-            Titular titular = this.gestorTitular.buscarTitular(titularDTO).get(0);
-            String documento = titular.getNumeroDocumento();
+            this.titularDTO = this.gestorTitular.buscarTitularDTO(titularDTO).get(0);
+            String documento = titularDTO.getNroDoc();
             String clase = (String) boxClase.getSelectedItem();
             if (clase.equals("Seleccionar")){
                 Util.mensajeAdvertencia("Advertencia", "No se permiten campo/s vacío/s");
             }
        
             else{
-                if(validarEdad(this.titularDTO)){
+                if(validarEdad()){
                     SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
                     Date dateInicio = formatter.parse(txtInicioVigencia.getText());
                     Date dateFin = formatter.parse(txtFinVigencia.getText());
                
                     LicenciaDTO licenciaDTO = new LicenciaDTO();
-                    licenciaDTO.setTitular(gestorTitular.buscarTitular(titularDTO).get(0));
+                    licenciaDTO.setTitular(gestorTitular.buscarTitularDTO(titularDTO).get(0));
                     licenciaDTO.setClase(gestorLicencia.mostrarClases(clase).get(0));
                     licenciaDTO.setFechaInicioVigencia(dateInicio);
                     licenciaDTO.setFechaFinVigencia(dateFin);
