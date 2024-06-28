@@ -20,6 +20,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import messages.Util;
 import models.entities.ClaseLicencia;
+import models.entities.Licencia;
 import models.entities.TipoDocumento;
 import models.entities.Titular;
 import org.eclipse.persistence.exceptions.ValidationException;
@@ -116,6 +117,63 @@ public class EmitirLicencia extends javax.swing.JFrame {
         return validez;
     }
     
+    public boolean validarClase(String clase){
+        boolean validez;
+        boolean restriccionVigencia;
+        boolean restriccionHistorico;
+        
+        try{
+            
+            if (clase.equals('A') || clase.equals('B') || clase.equals('F') || clase.equals('G')){
+                return true;
+            }
+            else{
+                titularDTO = gestorTitular.buscarTitularDTO(titularDTO).get(0);
+                List<LicenciaDTO> licencias = gestorLicencia.buscarLicenciaDTO(titularDTO);
+                // List<HistoricoLicencia> historico = gestorLicencia.buscarHistorico(licenciaDTO); (EN CASO DE QUE EL COMENTARIO DE ABAJO SEA ASI)
+                if (licencias.isEmpty()){ //ESTO HABRIA QUE VER SI UN TITULAR PARA SACAR LICENCIA DE CLASE C, D o E
+                                          //DEBE TENER SI O SI UNA LICENCIA DE CLASE B SACADA HACE MAS DE UN AÑO Y VIGENTE O SI ESA
+                                          // LICENCIA DE CLASE B PUEDE YA ESTAR VENCIDA Y EN ESE CASO TENDRÍA QUE BUSCARLA EN HISTORICOLICENCIA
+                                          // POR LO QUE EL IF QUEDARIA ASI COMO ESTA Y TENDRIA QUE AGREGAR "&& historico.isEmpty()" 
+                    return false;
+                }
+                else{ //EN CASO DE SER COMO EL COMENTARIO DE ARRIBA, ESTO SERÍA "ELSE IF(!(licencias.isEmpty())" Y DSP HABRIA QUE AGREGAR UN ELSE
+                      // EN CASO DE QUE LICENCIAS SEA VACIO PERO HISTORICO NO.
+                    for (LicenciaDTO licencia: licencias){
+                        if (licencia.getClase().toString().equals('B')){
+                            if(calcularAnios(licencia)<1){
+                                restriccionVigencia = false;
+                            }
+                            else{
+                                restriccionVigencia = true;
+                            }
+                        }
+                        else if (licencia.getClase().toString().equals('C') || licencia.getClase().toString().equals('D') || licencia.getClase().toString().equals('E')){
+                                 if (calcularEdad()>65){
+                                     if (gestorLicencia.buscarHistorico(licencia).isEmpty()){ //TENGO QUE TERMINAR LA FUNCION ESA DE BUSCAR HISTORICO
+                                         restriccionHistorico=false;
+                                     }
+                                     else{
+                                         restriccionHistorico=true;
+                                     }
+                                 }
+                                 else{
+                                     restriccionHistorico = true;
+                                 }
+                        }
+                    }
+                    return restriccionVigencia && restriccionHistorico
+                }
+            }
+            
+        } catch (Exception e){
+            Util.mensajeError("Error: Validando la clase", "Hubo un error: \n" + e.getMessage());
+        }
+        
+        
+        
+    }
+    
     public Integer calcularEdad(){
         
         Date currentDate = new Date();
@@ -142,6 +200,32 @@ public class EmitirLicencia extends javax.swing.JFrame {
         }
         
         return edad;
+    }
+    
+    public Integer calcularAnios(LicenciaDTO licenciaDTO){
+        
+        Date currentDate = new Date();
+       
+        Calendar calendar1 = Calendar.getInstance();
+        calendar1.setTime(licenciaDTO.getFechaInicioVigencia());
+            
+        Calendar calendar2 = Calendar.getInstance();
+        calendar2.setTime(currentDate);
+        
+        int yearLicencia=calendar1.get(Calendar.YEAR);
+        int monthLicencia=calendar1.get(Calendar.MONTH)+1;
+        int dayLicencia=calendar1.get(Calendar.DAY_OF_MONTH);
+        
+        int yearActual=calendar2.get(Calendar.YEAR);
+        int monthActual=calendar2.get(Calendar.MONTH)+1;
+        int dayActual=calendar2.get(Calendar.DAY_OF_MONTH);
+        
+        int anio = yearActual - yearLicencia;
+        if (monthActual<monthLicencia || (monthActual==monthLicencia && dayActual<dayLicencia)){
+            anio--;
+        }
+        
+        return anio;
     }
     
     private String calcularInicioVigencia() {
@@ -448,7 +532,7 @@ public class EmitirLicencia extends javax.swing.JFrame {
             }
        
             else{
-                if(validarEdad()){
+                if(validarEdad() and validarClase()){
                     SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
                     Date dateInicio = formatter.parse(txtInicioVigencia.getText());
                     Date dateFin = formatter.parse(txtFinVigencia.getText());

@@ -11,6 +11,7 @@ import dao.ClaseLicenciaDAOImpl;
 import dao.LicenciaDAOImpl;
 import dto.LicenciaDTO;
 import dto.TitularDTO;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.EntityManager;
@@ -23,10 +24,11 @@ import models.entities.Licencia;
  * @author Juani
  */
 public class GestorLicencia {
-    
+    EntityManager manager = UtilHibernate.getInstance().getEntityManager();
     GestorTitular gestorTitular = new GestorTitular();
     ClaseLicenciaDAOImpl claseImpl = new ClaseLicenciaDAOImpl();
     LicenciaDAOImpl licenciaImpl = new LicenciaDAOImpl();
+    HistoricoLicenciaDAOImpl historicoImpl = new HistoricoDAOImpl();
     
     public List<Date> mostrarInicioVigencia(TitularDTO titularDTO) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -69,5 +71,34 @@ public class GestorLicencia {
 
     public List<Licencia> buscarLicencia(TitularDTO titularDTO) {
         return licenciaImpl.buscarByTitularDTO(titularDTO);
+    }
+
+    public List<LicenciaDTO> buscarLicenciaDTO(TitularDTO titularDTO) {
+        try{
+            return  pasarListaADTO(licenciaImpl.buscarByTitularDTO(titularDTO));
+        } catch(Exception e){
+            return null;
+        }
+    }
+
+    private List<LicenciaDTO> pasarListaADTO(List<Licencia> licencias) {
+        List<LicenciaDTO> licenciasDTO = new ArrayList();
+        
+        for (Licencia licencia: licencias){
+            licenciasDTO.add(pasarADTO(licencia));
+        }
+        return licenciasDTO; 
+    }
+
+    private LicenciaDTO pasarADTO(Licencia licencia) {
+        LicenciaDTO licenciaDTO = new LicenciaDTO();
+        licenciaDTO.setFechaInicioVigencia(licencia.getFechaInicioVigencia());
+        licenciaDTO.setClase(licencia.getClaseLicencia());
+        
+        return licenciaDTO;
+    }
+    
+    public List<HistoricoLicencia> buscarHistorico(LicenciaDTO licenciaDTO){
+        return historicoImpl.buscarByTitularDTO(licenciaDTO);
     }
 }

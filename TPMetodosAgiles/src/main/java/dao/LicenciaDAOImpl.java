@@ -42,4 +42,16 @@ public class LicenciaDAOImpl implements LicenciaDAO{
         }
     }
     
+    @Override
+    public List<LicenciaDTO> buscarDTOByTitularDTO(TitularDTO titularDTO) {
+        try{
+            String consulta = "SELECT l FROM Licencia l JOIN Titular t ON l.id_titular = t.id WHERE t.numerodocumento = :numerodocumento";
+            TypedQuery<Licencia> query = (TypedQuery<Licencia>) entityManager.createQuery(consulta);
+            query.setParameter("numerodocumento", titularDTO.getNroDoc());
+            //return query.getResultList();
+            
+        } catch (Exception e){
+            throw new MyValidationException("Error: Buscar Licencia", e);
+        }
+    }
 }
