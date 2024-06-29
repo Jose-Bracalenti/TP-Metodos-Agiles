@@ -12,6 +12,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.swing.JOptionPane;
+import models.entities.ClaseLicencia;
 import models.entities.TipoDocumento;
 import models.entities.Titular;
 
@@ -78,6 +79,17 @@ public class TitularDAOImpl implements TitularDAO{
                 throw new MyValidationException("Error: BuscarTipoDoc DAO", e);
         }
                 
+    }
+    
+    public List<TipoDocumento> buscarAllTipoDoc(){
+        
+        try {
+            String consulta = "SELECT t FROM TipoDocumento t";
+            TypedQuery<TipoDocumento> query = (TypedQuery<TipoDocumento>) entityManager.createQuery(consulta);
+            return query.getResultList();
+        } catch (Exception e) {
+            return null;
+        }
     }
     
 }

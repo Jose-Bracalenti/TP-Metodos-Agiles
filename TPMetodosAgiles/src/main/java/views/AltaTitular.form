@@ -218,10 +218,10 @@
                   <Group type="102" alignment="0" attributes="0">
                       <Component id="jLabel_Documento11" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="txtFactor" alignment="3" min="-2" pref="27" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="jLabel_Documento12" alignment="0" min="-2" max="-2" attributes="0"/>
                           <Component id="checkDonante" alignment="1" min="-2" pref="27" max="-2" attributes="0"/>
+                          <Component id="txtFactor" min="-2" pref="27" max="-2" attributes="0"/>
                       </Group>
                   </Group>
               </Group>
@@ -279,11 +279,7 @@
     <Component class="javax.swing.JComboBox" name="boxTipo">
       <Properties>
         <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-          <StringArray count="3">
-            <StringItem index="0" value="CUIT"/>
-            <StringItem index="1" value="CUIL"/>
-            <StringItem index="2" value="DNI"/>
-          </StringArray>
+          <StringArray count="0"/>
         </Property>
       </Properties>
       <Events>
@@ -449,7 +445,6 @@
         <Property name="enabled" type="boolean" value="false"/>
         <Property name="focusable" type="boolean" value="false"/>
         <Property name="horizontalTextPosition" type="int" value="2"/>
-        <Property name="opaque" type="boolean" value="false"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="checkDonanteActionPerformed"/>

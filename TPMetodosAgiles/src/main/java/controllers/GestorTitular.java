@@ -74,4 +74,8 @@ public class GestorTitular {
             throw new MyValidationException("Error buscarTipoDoc", e);
         }
     }
+    
+    public List<TipoDocumento> mostrarTipos(){
+        return titularImpl.buscarAllTipoDoc();
+    }
 }

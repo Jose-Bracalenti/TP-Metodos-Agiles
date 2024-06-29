@@ -9,12 +9,14 @@ package views;
 import controllers.GestorTitular;
 import dto.TitularDTO;
 import java.awt.Color;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.JOptionPane;
 import javax.swing.border.Border;
 import messages.Util;
 import models.entities.TipoDocumento;
+import models.entities.Titular;
 
 /**
  *
@@ -36,6 +38,15 @@ public class AltaTitular extends javax.swing.JFrame {
         
         originalTXTBorder  = txtNroDocumento.getBorder();
         originalBOXBorder = boxTipo.getBorder();
+        mostrarTipoDoc();
+    }
+    
+    public void mostrarTipoDoc(){
+        
+        List<TipoDocumento> tipos = gestorTitular.mostrarTipos();
+        for(TipoDocumento t: tipos){
+            boxTipo.addItem(t.getEspecificacion());
+        }
     }
     
      //Funcion que pinta de rojo los TXT y el Box en caso de que sena invalidos
@@ -60,6 +71,71 @@ public class AltaTitular extends javax.swing.JFrame {
         }catch(NumberFormatException e){
             return false;
         }
+    }
+    
+    public void rellenarInformacion(TitularDTO titularDTO, boolean es_titular){
+        
+        txtNombre.setEditable(!es_titular);
+        txtApellido.setEditable(!es_titular);
+        txtCalle.setEditable(!es_titular);
+        txtNumero.setEditable(!es_titular);
+        txtPiso.setEditable(!es_titular);
+        txtDepto.setEditable(!es_titular);
+        txtCUIL.setEditable(!es_titular);
+        txtFechaDeNacimiento.setEditable(!es_titular);
+        txtGrupoSanguineo.setEditable(!es_titular);
+        txtFactor.setEditable(!es_titular);
+        checkDonante.setEnabled(!es_titular);
+        
+        try {
+            if(es_titular){
+                Titular titular = gestorTitular.buscarTitular(titularDTO).get(0);
+               
+                txtNombre.setText(titular.getNombre());
+                txtApellido.setText(titular.getApellido());
+                txtCalle.setText(titular.getDomicilio().getCalle());
+                txtNumero.setText(titular.getDomicilio().getPiso().toString());
+                if(titular.getDomicilio().getNumero() != null){
+                   txtPiso.setText(titular.getDomicilio().getNumero().toString());
+                }
+                if(titular.getDomicilio().getDepartamento() != null){
+                   txtDepto.setText(titular.getDomicilio().getDepartamento());
+                }
+                txtCUIL.setText(titular.getCuil());
+                txtFechaDeNacimiento.setText(new SimpleDateFormat("dd/MM/yyyy").format(titular.getFechaNacimiento()));
+                txtGrupoSanguineo.setText(titular.getGrupoSanguineo().toString());
+                txtFactor.setText(titular.getFactorRH().toString());
+                checkDonante.setSelected(titular.getDonanteDeOrganos());
+            }
+        } catch (Exception e) {
+        }
+    }
+    
+    public void vaciarInformacion(){
+        
+        txtNombre.setEditable(false);
+        txtApellido.setEditable(false);
+        txtCalle.setEditable(false);
+        txtNumero.setEditable(false);
+        txtPiso.setEditable(false);
+        txtDepto.setEditable(false);
+        txtCUIL.setEditable(false);
+        txtFechaDeNacimiento.setEditable(false);
+        txtGrupoSanguineo.setEditable(false);
+        txtFactor.setEditable(false);
+        checkDonante.setEnabled(false);
+        
+        txtNombre.setText(null);
+        txtApellido.setText(null);
+        txtCalle.setText(null);
+        txtNumero.setText(null);
+        txtPiso.setText(null);
+        txtDepto.setText(null);
+        txtCUIL.setText(null);
+        txtFechaDeNacimiento.setText(null);
+        txtGrupoSanguineo.setText(null);
+        txtFactor.setText(null);
+        checkDonante.setSelected(false);
     }
 
     /** This method is called from within the constructor to
@@ -117,7 +193,6 @@ public class AltaTitular extends javax.swing.JFrame {
         jLabel_Documento1.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jLabel_Documento1.setText("Tipo:");
 
-        boxTipo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "CUIT", "CUIL", "DNI" }));
         boxTipo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 boxTipoActionPerformed(evt);
@@ -188,7 +263,6 @@ public class AltaTitular extends javax.swing.JFrame {
         checkDonante.setEnabled(false);
         checkDonante.setFocusable(false);
         checkDonante.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
-        checkDonante.setOpaque(false);
         checkDonante.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 checkDonanteActionPerformed(evt);
@@ -366,10 +440,10 @@ public class AltaTitular extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel_Documento11)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(txtFactor, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel_Documento12)
-                            .addComponent(checkDonante, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(checkDonante, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtFactor, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 61, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnCancelar, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -405,9 +479,11 @@ public class AltaTitular extends javax.swing.JFrame {
         
         if(nroDocumento.isEmpty()){
             pintarInvalidos(nroDocumento, false);
+            vaciarInformacion();
             Util.mensajeAdvertencia("Advertencia", "No se permiten campo/s vacío/s");
         } else if(!isInteger(nroDocumento)){
             pintarInvalidos(nroDocumento, false);
+            vaciarInformacion();
             Util.mensajeAdvertencia("Advertencia", "Formato invalido");
         } else {
             
@@ -420,10 +496,12 @@ public class AltaTitular extends javax.swing.JFrame {
                 titulares = gestorTitular.buscarTitularDTO(titularDTO);
                 if(titulares.isEmpty()){
                     //Aca hay que buscar por contribuyentes
+                    vaciarInformacion();
                 } else {
                     titularDTO = titulares.get(0);
                     pintarInvalidos(nroDocumento, false);
-                    Util.mensajeConfirmacion("Confirmado","Datos traidos de tabla Titulares");
+                    rellenarInformacion(titularDTO, true);
+                    Util.mensajeInformacion("Confirmado","Datos traidos de tabla Titulares");
                 }
             } catch (Exception e) {
                 Util.mensajeError("Error", e.toString());

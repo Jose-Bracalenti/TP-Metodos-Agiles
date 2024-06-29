@@ -18,5 +18,5 @@ public interface TitularDAO {
     
     List<Titular> buscar(TitularDTO titularDTO);
     List<TipoDocumento> buscarTipoDoc(String especificacion);
-    
+    List<TipoDocumento> buscarAllTipoDoc();
 }
