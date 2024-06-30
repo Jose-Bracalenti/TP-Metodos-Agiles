@@ -20,6 +20,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import messages.Util;
 import models.entities.ClaseLicencia;
+import models.entities.HistoricoLicencia;
 import models.entities.Licencia;
 import models.entities.TipoDocumento;
 import models.entities.Titular;
@@ -118,60 +119,47 @@ public class EmitirLicencia extends javax.swing.JFrame {
     }
     
     public boolean validarClase(String clase){
-        boolean validez;
-        boolean restriccionVigencia;
-        boolean restriccionHistorico;
         
         try{
-            
+            boolean validez;
+            boolean restriccionVigencia=false;
+            boolean restriccionHistorico;
             if (clase.equals('A') || clase.equals('B') || clase.equals('F') || clase.equals('G')){
-                return true;
+                restriccionVigencia = true;
+                restriccionHistorico=true;
             }
             else{
                 titularDTO = gestorTitular.buscarTitularDTO(titularDTO).get(0);
-                List<LicenciaDTO> licencias = gestorLicencia.buscarLicenciaDTO(titularDTO);
-                // List<HistoricoLicencia> historico = gestorLicencia.buscarHistorico(licenciaDTO); (EN CASO DE QUE EL COMENTARIO DE ABAJO SEA ASI)
-                if (licencias.isEmpty()){ //ESTO HABRIA QUE VER SI UN TITULAR PARA SACAR LICENCIA DE CLASE C, D o E
-                                          //DEBE TENER SI O SI UNA LICENCIA DE CLASE B SACADA HACE MAS DE UN AÑO Y VIGENTE O SI ESA
-                                          // LICENCIA DE CLASE B PUEDE YA ESTAR VENCIDA Y EN ESE CASO TENDRÍA QUE BUSCARLA EN HISTORICOLICENCIA
-                                          // POR LO QUE EL IF QUEDARIA ASI COMO ESTA Y TENDRIA QUE AGREGAR "&& historico.isEmpty()" 
-                    return false;
-                }
-                else{ //EN CASO DE SER COMO EL COMENTARIO DE ARRIBA, ESTO SERÍA "ELSE IF(!(licencias.isEmpty())" Y DSP HABRIA QUE AGREGAR UN ELSE
-                      // EN CASO DE QUE LICENCIAS SEA VACIO PERO HISTORICO NO.
-                    for (LicenciaDTO licencia: licencias){
-                        if (licencia.getClase().toString().equals('B')){
-                            if(calcularAnios(licencia)<1){
-                                restriccionVigencia = false;
-                            }
-                            else{
-                                restriccionVigencia = true;
-                            }
-                        }
-                        else if (licencia.getClase().toString().equals('C') || licencia.getClase().toString().equals('D') || licencia.getClase().toString().equals('E')){
-                                 if (calcularEdad()>65){
-                                     if (gestorLicencia.buscarHistorico(licencia).isEmpty()){ //TENGO QUE TERMINAR LA FUNCION ESA DE BUSCAR HISTORICO
-                                         restriccionHistorico=false;
-                                     }
-                                     else{
-                                         restriccionHistorico=true;
-                                     }
-                                 }
-                                 else{
-                                     restriccionHistorico = true;
-                                 }
-                        }
+                List<LicenciaDTO> licenciaClaseB = gestorLicencia.buscarLicenciaDTOByTitularDTOyClase(titularDTO, "B");
+                List<HistoricoLicencia> historicoClaseB = gestorLicencia.buscarHistoricoByTitularDTOyClase(titularDTO, "B");
+                //ACA SE CHEQUEA QUE LA PERSONA HAYA SACADO UNA LICENCIA DE CLASE B HACE 1 AÑO O MAS
+                if (!(licenciaClaseB.isEmpty())){
+                    if(calcularAnios(licenciaClaseB.get(0))>=1){
+                       restriccionVigencia = true;
                     }
-                    return restriccionVigencia && restriccionHistorico
+                }
+                else if (!(historicoClaseB.isEmpty())){
+                    restriccionVigencia=true;
+                }
+                
+                //ACA SE CHEQUEA QUE LA PERSONA, EN CASO DE TENER MAS DE 65 AÑOS YA HAYA SACADO UNA LICENCIA CLASE C, D o E    
+                if (calcularEdad()>65){
+                   if (gestorLicencia.buscarHistoricoByTitularDTOyClase(titularDTO, "C").isEmpty() && gestorLicencia.buscarHistoricoByTitularDTOyClase(titularDTO, "D").isEmpty() && gestorLicencia.buscarHistoricoByTitularDTOyClase(titularDTO, "E").isEmpty()){ //TENGO QUE TERMINAR LA FUNCION ESA DE BUSCAR HISTORICO
+                       restriccionHistorico=false;
+                   }
+                   else{
+                       restriccionHistorico=true;
+                    }
+                }
+                else{
+                     restriccionHistorico=true;
                 }
             }
+            return restriccionVigencia && restriccionHistorico;
             
         } catch (Exception e){
-            Util.mensajeError("Error: Validando la clase", "Hubo un error: \n" + e.getMessage());
+            return false;
         }
-        
-        
-        
     }
     
     public Integer calcularEdad(){
@@ -532,7 +520,7 @@ public class EmitirLicencia extends javax.swing.JFrame {
             }
        
             else{
-                if(validarEdad() and validarClase()){
+                if(validarEdad() && validarClase(clase)){
                     SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
                     Date dateInicio = formatter.parse(txtInicioVigencia.getText());
                     Date dateFin = formatter.parse(txtFinVigencia.getText());

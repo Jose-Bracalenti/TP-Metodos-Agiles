@@ -8,6 +8,7 @@ package controllers;
 import Mappers.MyValidationException;
 import Mappers.UtilHibernate;
 import dao.ClaseLicenciaDAOImpl;
+import dao.HistoricoDAOImpl;
 import dao.LicenciaDAOImpl;
 import dto.LicenciaDTO;
 import dto.TitularDTO;
@@ -28,7 +29,7 @@ public class GestorLicencia {
     GestorTitular gestorTitular = new GestorTitular();
     ClaseLicenciaDAOImpl claseImpl = new ClaseLicenciaDAOImpl();
     LicenciaDAOImpl licenciaImpl = new LicenciaDAOImpl();
-    HistoricoLicenciaDAOImpl historicoImpl = new HistoricoDAOImpl();
+    HistoricoDAOImpl historicoImpl = new HistoricoDAOImpl();
     
     public List<Date> mostrarInicioVigencia(TitularDTO titularDTO) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -80,7 +81,15 @@ public class GestorLicencia {
             return null;
         }
     }
-
+    
+    public List<LicenciaDTO> buscarLicenciaDTOByTitularDTOyClase(TitularDTO titularDTO, String clase) {
+        try{
+            return  pasarListaADTO(licenciaImpl.buscarByTitularDTOyClase(titularDTO, clase));
+        } catch(Exception e){
+            return null;
+        }
+    }
+    
     private List<LicenciaDTO> pasarListaADTO(List<Licencia> licencias) {
         List<LicenciaDTO> licenciasDTO = new ArrayList();
         
@@ -98,7 +107,11 @@ public class GestorLicencia {
         return licenciaDTO;
     }
     
-    public List<HistoricoLicencia> buscarHistorico(LicenciaDTO licenciaDTO){
-        return historicoImpl.buscarByTitularDTO(licenciaDTO);
+    public List<HistoricoLicencia> buscarHistorico(TitularDTO titularDTO){
+        return historicoImpl.buscarByTitularDTO(titularDTO);
+    }
+    
+    public List<HistoricoLicencia> buscarHistoricoByTitularDTOyClase(TitularDTO titularDTO, String clase){
+        return historicoImpl.buscarByTitularDTOyClase(titularDTO, clase);
     }
 }

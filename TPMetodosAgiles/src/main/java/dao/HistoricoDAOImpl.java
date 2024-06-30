@@ -8,8 +8,10 @@ package dao;
 import Mappers.MyValidationException;
 import Mappers.UtilHibernate;
 import dto.LicenciaDTO;
+import dto.TitularDTO;
 import java.util.List;
 import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
 import models.entities.HistoricoLicencia;
 
 /**
@@ -20,9 +22,25 @@ public class HistoricoDAOImpl implements HistoricoDAO{
     private final EntityManager entityManager = UtilHibernate.getInstance().getEntityManager();
     
     @Override
-    public List<HistoricoLicencia> buscarByLicenciaDTO (LicenciaDTO licenciaDTO){
+    public List<HistoricoLicencia> buscarByTitularDTO (TitularDTO titularDTO){
         try{
-            String query = 'SELECT h FROM HistoricoLicencia h WHERE'
+            String consulta = "SELECT h FROM HistoricoLicencia h WHERE h.id_Titular = :idTitular";
+            TypedQuery<HistoricoLicencia> query = (TypedQuery<HistoricoLicencia>) entityManager.createQuery(consulta);
+            query.setParameter("idTitular", titularDTO.getId());
+            return query.getResultList();
+        }catch(Exception e){
+            throw new MyValidationException("Error: Buscar Historico Licencia", e);
+        }
+    }
+    
+    @Override
+    public List<HistoricoLicencia> buscarByTitularDTOyClase(TitularDTO titularDTO, String clase) {
+        try{
+            String consulta = "SELECT h FROM HistoricoLicencia h WHERE h.id_Titular = :idTitular AND h.clase = :clase";
+            TypedQuery<HistoricoLicencia> query = (TypedQuery<HistoricoLicencia>) entityManager.createQuery(consulta);
+            query.setParameter("idTitular", titularDTO.getId());
+            query.setParameter("clase", clase);
+            return query.getResultList();
         }catch(Exception e){
             throw new MyValidationException("Error: Buscar Historico Licencia", e);
         }

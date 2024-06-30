@@ -13,6 +13,7 @@ import models.entities.TipoDocumento;
  * @author Juani
  */
 public class TitularDTO {
+    private Integer id;
     private String apellido;
     private String nombre;
     private TipoDocumento tipoDoc;
@@ -22,6 +23,14 @@ public class TitularDTO {
     public TitularDTO() {
     }
 
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+    
     public String getApellido() {
         return apellido;
     }

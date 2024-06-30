@@ -5,7 +5,7 @@
  */
 package dao;
 
-import dto.LicenciaDTO;
+import dto.TitularDTO;
 import java.util.List;
 import models.entities.HistoricoLicencia;
 
@@ -14,5 +14,6 @@ import models.entities.HistoricoLicencia;
  * @author Juani
  */
 public interface HistoricoDAO {
-    List<HistoricoLicencia> buscarByLicenciaDTO(LicenciaDTO licenciaDTO);
+    List<HistoricoLicencia> buscarByTitularDTO (TitularDTO titularDTO);
+    List<HistoricoLicencia> buscarByTitularDTOyClase(TitularDTO titularDTO, String clase);
 }

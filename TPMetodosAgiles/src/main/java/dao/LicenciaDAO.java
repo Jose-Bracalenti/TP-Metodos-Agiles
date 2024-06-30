@@ -17,5 +17,5 @@ import models.entities.Licencia;
 public interface LicenciaDAO {
     void altaLicencia(Licencia licencia);
     List<Licencia> buscarByTitularDTO(TitularDTO titularDTO);
-    List<LicenciaDTO> buscarDTOByTitularDTO(TitularDTO titularDTO);
+    //List<LicenciaDTO> buscarDTOByTitularDTO(TitularDTO titularDTO);
 }

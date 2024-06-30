@@ -41,8 +41,21 @@ public class LicenciaDAOImpl implements LicenciaDAO{
             throw new MyValidationException("Error: Buscar Licencia", e);
         }
     }
-    
     @Override
+    public List<Licencia> buscarByTitularDTOyClase(TitularDTO titularDTO, String clase) {
+        try{
+            String consulta = "SELECT l FROM Licencia l JOIN Titular t ON l.id_titular = t.id WHERE t.numerodocumento = :numerodocumento AND l.clase = :clase";
+            TypedQuery<Licencia> query = (TypedQuery<Licencia>) entityManager.createQuery(consulta);
+            query.setParameter("numerodocumento", titularDTO.getNroDoc());
+            query.setParameter("clase", clase);
+            return query.getResultList();
+            
+        } catch (Exception e){
+            throw new MyValidationException("Error: Buscar Licencia", e);
+        }
+    }
+    
+    /*@Override
     public List<LicenciaDTO> buscarDTOByTitularDTO(TitularDTO titularDTO) {
         try{
             String consulta = "SELECT l FROM Licencia l JOIN Titular t ON l.id_titular = t.id WHERE t.numerodocumento = :numerodocumento";
@@ -53,5 +66,5 @@ public class LicenciaDAOImpl implements LicenciaDAO{
         } catch (Exception e){
             throw new MyValidationException("Error: Buscar Licencia", e);
         }
-    }
+    }*/
 }
