@@ -13,6 +13,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.swing.JOptionPane;
 import models.entities.ClaseLicencia;
+import models.entities.Contribuyente;
 import models.entities.TipoDocumento;
 import models.entities.Titular;
 
@@ -23,6 +24,15 @@ import models.entities.Titular;
 public class TitularDAOImpl implements TitularDAO{
     
     private final EntityManager entityManager = UtilHibernate.getInstance().getEntityManager();
+    
+    public void altaTitular(Titular titular){
+        entityManager.getTransaction().begin();
+        entityManager.persist(titular);
+        entityManager.getTransaction().commit();
+    }
+    
+    
+    
     
     @Override
     public List<Titular> buscar(TitularDTO titularDTO) {
@@ -81,6 +91,7 @@ public class TitularDAOImpl implements TitularDAO{
                 
     }
     
+    @Override
     public List<TipoDocumento> buscarAllTipoDoc(){
         
         try {
@@ -88,6 +99,21 @@ public class TitularDAOImpl implements TitularDAO{
             TypedQuery<TipoDocumento> query = (TypedQuery<TipoDocumento>) entityManager.createQuery(consulta);
             return query.getResultList();
         } catch (Exception e) {
+            return null;
+        }
+    }
+    
+    @Override
+    public List<Contribuyente> buscarContribuynete(String numeroDocumento, String tipoDoc){
+        
+        try {
+            String consulta = "SELECT c FROM Contribuyente c WHERE c.numerodocumento = :numerodocumento AND c.tipoDocumento = :tipoDocumento";
+            TypedQuery<Contribuyente> query = (TypedQuery<Contribuyente>) entityManager.createQuery(consulta);
+            query.setParameter("numerodocumento", numeroDocumento);
+            query.setParameter("tipoDocumento", tipoDoc);
+            return query.getResultList();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
             return null;
         }
     }

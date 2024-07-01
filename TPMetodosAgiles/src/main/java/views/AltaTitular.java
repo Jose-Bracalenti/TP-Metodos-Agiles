@@ -6,15 +6,23 @@
 
 package views;
 
+import controllers.GestorDomicilio;
 import controllers.GestorTitular;
 import dto.TitularDTO;
 import java.awt.Color;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import javax.swing.JOptionPane;
 import javax.swing.border.Border;
 import messages.Util;
+import models.entities.Contribuyente;
+import models.entities.Domicilio;
+import models.entities.FactorRHEnum;
+import models.entities.GrupoSanguineoEnum;
 import models.entities.TipoDocumento;
 import models.entities.Titular;
 
@@ -25,6 +33,7 @@ import models.entities.Titular;
 public class AltaTitular extends javax.swing.JFrame {
     
     GestorTitular gestorTitular = new GestorTitular();
+    GestorDomicilio gestorDomicilio = new GestorDomicilio();
     
     //Bordes de los TXT y del Box para pintarlos
     Border redBorder = BorderFactory.createLineBorder(Color.RED, 2);
@@ -49,8 +58,8 @@ public class AltaTitular extends javax.swing.JFrame {
         }
     }
     
-     //Funcion que pinta de rojo los TXT y el Box en caso de que sena invalidos
-    public void pintarInvalidos(String nroDocumento, boolean no_esta){
+     //Funcion que pinta de rojo los TXT  y el Box de la busqueda en caso de que sean invalidos
+    public void pintarInvalidosBuscar(String nroDocumento, boolean no_esta){
         if(nroDocumento.isEmpty() || !isInteger(nroDocumento)|| no_esta){
             txtNroDocumento.setBorder(redBorder);
         } else {
@@ -63,14 +72,94 @@ public class AltaTitular extends javax.swing.JFrame {
         }
     }
     
+    
+    
+    public boolean pintarInvalidosAceptar(){
+        Boolean invalidos = false;
+        
+        if(txtNroDocumento.getText().isEmpty() || !isInteger(txtNroDocumento.getText())){
+            txtNroDocumento.setBorder(redBorder);
+            invalidos = true;
+        } else {
+            txtNroDocumento.setBorder(originalTXTBorder);
+        }
+        
+        if(txtNombre.getText().isEmpty()){
+            txtNombre.setBorder(redBorder);
+            invalidos = true;
+        } else {
+            txtNombre.setBorder(originalTXTBorder);
+        }
+        
+        if(txtApellido.getText().isEmpty()){
+            txtApellido.setBorder(redBorder);
+            invalidos = true;
+        } else {
+            txtApellido.setBorder(originalTXTBorder);
+        }
+        
+        if(txtCalle.getText().isEmpty()){
+            txtCalle.setBorder(redBorder);
+            invalidos = true;
+        } else {
+            txtCalle.setBorder(originalTXTBorder);
+        }
+        
+        if(txtNumero.getText().isEmpty() || !isInteger(txtNumero.getText())){
+            txtNumero.setBorder(redBorder);
+            invalidos = true;
+        } else {
+            txtNumero.setBorder(originalTXTBorder);
+        }
+        
+        if(txtCUIL.getText().isEmpty() || !isInteger(txtCUIL.getText())){
+            txtCUIL.setBorder(redBorder);
+            invalidos = true;
+        } else {
+            txtCUIL.setBorder(originalTXTBorder);
+        }
+        
+        if(txtFechaDeNacimiento.getText().isEmpty()){
+            txtFechaDeNacimiento.setBorder(redBorder);
+            invalidos = true;
+        } else {
+            txtFechaDeNacimiento.setBorder(originalTXTBorder);
+        }
+        
+        if(txtGrupoSanguineo.getText().isEmpty() || !estaEnEnum(txtGrupoSanguineo.getText(),GrupoSanguineoEnum.class)){
+            txtGrupoSanguineo.setBorder(redBorder);
+            invalidos = true;
+        } else {
+            txtGrupoSanguineo.setBorder(originalTXTBorder);
+        }
+        
+        if(txtFactor.getText().isEmpty() || !estaEnEnum(txtFactor.getText(),FactorRHEnum.class)){
+            txtFactor.setBorder(redBorder);
+            invalidos = true;
+        } else {
+            txtFactor.setBorder(originalTXTBorder);
+        }
+        
+        return invalidos;
+    }
+    
     //Funcion para comprobar que un string es un numero
     public boolean isInteger(String numero){
         try{
-            Integer.parseInt(numero);
+            Long.parseLong(numero);
             return true;
         }catch(NumberFormatException e){
             return false;
         }
+    }
+    
+    public boolean estaEnEnum(String valor, Class<? extends Enum<?>> enumClass){
+        for (Enum<?> enumConstant : enumClass.getEnumConstants()) {
+            if (enumConstant.name().equals(valor)) {
+                return true;
+            }
+        }
+        return false;
     }
     
     public void rellenarInformacion(TitularDTO titularDTO, boolean es_titular){
@@ -106,6 +195,24 @@ public class AltaTitular extends javax.swing.JFrame {
                 txtGrupoSanguineo.setText(titular.getGrupoSanguineo().toString());
                 txtFactor.setText(titular.getFactorRH().toString());
                 checkDonante.setSelected(titular.getDonanteDeOrganos());
+            } else {
+                Contribuyente contribuyente = gestorTitular.buscarContribuyente(titularDTO.getNroDoc(), titularDTO.getTipoDoc().getEspecificacion());
+                
+                txtNombre.setText(contribuyente.getNombre());
+                txtApellido.setText(contribuyente.getApellido());
+                txtCalle.setText(contribuyente.getCalle());
+                txtNumero.setText(contribuyente.getPiso().toString());
+                if(contribuyente.getNumero() != null){
+                   txtPiso.setText(contribuyente.getNumero().toString());
+                }
+                if(contribuyente.getDepartamento() != null){
+                   txtDepto.setText(contribuyente.getDepartamento());
+                }
+                txtCUIL.setText(contribuyente.getCuil());
+                txtFechaDeNacimiento.setText(new SimpleDateFormat("dd/MM/yyyy").format(contribuyente.getFechaNacimiento()));
+                txtGrupoSanguineo.setText(contribuyente.getGrupoSanguineo().toString());
+                txtFactor.setText(contribuyente.getFactorRH().toString());
+                checkDonante.setSelected(contribuyente.getDonanteDeOrganos());
             }
         } catch (Exception e) {
         }
@@ -137,6 +244,8 @@ public class AltaTitular extends javax.swing.JFrame {
         txtFactor.setText(null);
         checkDonante.setSelected(false);
     }
+    
+    
 
     /** This method is called from within the constructor to
      * initialize the form.
@@ -170,7 +279,6 @@ public class AltaTitular extends javax.swing.JFrame {
         jLabel_Documento8 = new javax.swing.JLabel();
         txtCUIL = new javax.swing.JTextField();
         jLabel_Documento9 = new javax.swing.JLabel();
-        txtFechaDeNacimiento = new javax.swing.JTextField();
         jLabel_Documento10 = new javax.swing.JLabel();
         txtGrupoSanguineo = new javax.swing.JTextField();
         jLabel_Documento11 = new javax.swing.JLabel();
@@ -179,6 +287,7 @@ public class AltaTitular extends javax.swing.JFrame {
         jLabel_Documento12 = new javax.swing.JLabel();
         btnBuscar1 = new javax.swing.JButton();
         btnAceptar = new javax.swing.JButton();
+        txtFechaDeNacimiento = new javax.swing.JFormattedTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -247,8 +356,6 @@ public class AltaTitular extends javax.swing.JFrame {
         jLabel_Documento9.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jLabel_Documento9.setText("Fecha de Nacimiento:");
 
-        txtFechaDeNacimiento.setEditable(false);
-
         jLabel_Documento10.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jLabel_Documento10.setText("Grupo Sanguineo:");
 
@@ -288,6 +395,9 @@ public class AltaTitular extends javax.swing.JFrame {
             }
         });
 
+        txtFechaDeNacimiento.setEditable(false);
+        txtFechaDeNacimiento.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.DateFormatter(new java.text.SimpleDateFormat("dd/MM/yyyy"))));
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -322,45 +432,44 @@ public class AltaTitular extends javax.swing.JFrame {
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addComponent(txtApellido)
                                     .addComponent(jLabel_Documento3, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                        .addComponent(txtCUIL)
-                                        .addComponent(jLabel_Documento8, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGap(53, 53, 53)
-                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                        .addComponent(txtFechaDeNacimiento)
-                                        .addComponent(jLabel_Documento9, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                .addGroup(layout.createSequentialGroup()
-                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                        .addGroup(layout.createSequentialGroup()
-                                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                                .addComponent(txtCalle)
-                                                .addComponent(jLabel_Documento4, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                            .addGap(53, 53, 53)
-                                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                .addComponent(txtNumero, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addComponent(jLabel_Documento5))
-                                            .addGap(46, 46, 46)
-                                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                .addComponent(txtPiso, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addComponent(jLabel_Documento6, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                            .addGap(43, 43, 43))
-                                        .addGroup(layout.createSequentialGroup()
-                                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                                .addComponent(txtGrupoSanguineo)
-                                                .addComponent(jLabel_Documento10, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                            .addGap(53, 53, 53)
-                                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                                .addComponent(txtFactor)
-                                                .addComponent(jLabel_Documento11, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                            .addComponent(jLabel_Documento12)
-                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
-                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(txtDepto, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(jLabel_Documento7, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(checkDonante, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)))))))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                            .addComponent(txtCalle)
+                                            .addComponent(jLabel_Documento4, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addGap(53, 53, 53)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(txtNumero, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(jLabel_Documento5))
+                                        .addGap(46, 46, 46)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(txtPiso, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(jLabel_Documento6, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addGap(43, 43, 43))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                            .addComponent(txtGrupoSanguineo)
+                                            .addComponent(jLabel_Documento10, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addGap(53, 53, 53)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                            .addComponent(txtFactor)
+                                            .addComponent(jLabel_Documento11, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(jLabel_Documento12)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(txtDepto, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel_Documento7, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(checkDonante, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(txtCUIL)
+                                    .addComponent(jLabel_Documento8, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(53, 53, 53)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel_Documento9, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(txtFechaDeNacimiento, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE))))))
                 .addContainerGap(49, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGap(0, 0, Short.MAX_VALUE)
@@ -478,11 +587,11 @@ public class AltaTitular extends javax.swing.JFrame {
         String tipo = (String) boxTipo.getSelectedItem();
         
         if(nroDocumento.isEmpty()){
-            pintarInvalidos(nroDocumento, false);
+            pintarInvalidosBuscar(nroDocumento, false);
             vaciarInformacion();
             Util.mensajeAdvertencia("Advertencia", "No se permiten campo/s vacío/s");
         } else if(!isInteger(nroDocumento)){
-            pintarInvalidos(nroDocumento, false);
+            pintarInvalidosBuscar(nroDocumento, false);
             vaciarInformacion();
             Util.mensajeAdvertencia("Advertencia", "Formato invalido");
         } else {
@@ -495,14 +604,27 @@ public class AltaTitular extends javax.swing.JFrame {
                 titularDTO.setTipoDoc(gestorTitular.buscarTipoDoc(tipo));
                 titulares = gestorTitular.buscarTitularDTO(titularDTO);
                 if(titulares.isEmpty()){
-                    //Aca hay que buscar por contribuyentes
-                    vaciarInformacion();
+                    try {
+                        Contribuyente contribuyente = gestorTitular.buscarContribuyente(nroDocumento, tipo);
+                        if(contribuyente == null){
+                            pintarInvalidosBuscar(nroDocumento, true);
+                            vaciarInformacion();
+                            Util.mensajeAdvertencia("Advertencia", "No se encuentra la combinacion de numero y tipo documento en ninguna base de datos");
+                        } else {
+                            pintarInvalidosBuscar(nroDocumento, false);
+                            rellenarInformacion(titularDTO, false);
+                            Util.mensajeInformacion("Confirmado","Datos traidos de tabla Contribuyente");
+                        }
+                    } catch (Exception e) {
+                    }
+                    
                 } else {
                     titularDTO = titulares.get(0);
-                    pintarInvalidos(nroDocumento, false);
+                    pintarInvalidosBuscar(nroDocumento, false);
                     rellenarInformacion(titularDTO, true);
                     Util.mensajeInformacion("Confirmado","Datos traidos de tabla Titulares");
                 }
+                
             } catch (Exception e) {
                 Util.mensajeError("Error", e.toString());
             }
@@ -511,9 +633,53 @@ public class AltaTitular extends javax.swing.JFrame {
     }//GEN-LAST:event_btnBuscar1ActionPerformed
 
     private void btnAceptarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAceptarActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnAceptarActionPerformed
 
+        if(!txtNombre.isEditable() && txtNombre.getText().isEmpty()){
+            Util.mensajeAdvertencia("Advertencia", "Tiene que buscar un titular o contribuyente primero");
+            
+        } else if(txtNombre.isEditable()){
+            if(pintarInvalidosAceptar()){
+                Util.mensajeAdvertencia("Advertencia", "Campos con formatos invalidos");
+                return;
+            }
+            Titular titular = new Titular();
+            titular.setNumeroDocumento(txtNroDocumento.getText());
+            titular.setNombre(txtNombre.getText());
+            titular.setApellido(txtApellido.getText());
+            titular.setCuil(txtCUIL.getText());
+            try {
+                titular.setFechaNacimiento(new SimpleDateFormat("dd/MM/yyyy").parse(txtFechaDeNacimiento.getText()));
+            } catch (ParseException ex) {
+                Logger.getLogger(AltaTitular.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            titular.setGrupoSanguineo(GrupoSanguineoEnum.valueOf(txtGrupoSanguineo.getText()));
+            titular.setFactorRH(FactorRHEnum.valueOf(txtFactor.getText()));
+            titular.setDonanteDeOrganos(checkDonante.isSelected());
+            titular.setTipoDocumento(gestorTitular.buscarTipoDoc((String) boxTipo.getSelectedItem()));
+            
+            Domicilio domicilio = new Domicilio();
+            domicilio.setCalle(txtCalle.getText());
+            domicilio.setPiso(Integer.parseInt(txtNumero.getText()));
+            if(!txtPiso.getText().isEmpty()){
+                domicilio.setNumero(Integer.parseInt(txtPiso.getText()));
+            }
+            if(!txtDepto.getText().isEmpty()){
+                domicilio.setDepartamento(txtDepto.getText());
+            }
+            
+            try {
+                titular.setDomicilio(gestorDomicilio.altaDomicilio(domicilio));
+                gestorTitular.altaTitular(titular);
+            } catch (Exception e) {
+            }
+            
+            
+        }
+        
+    }//GEN-LAST:event_btnAceptarActionPerformed
+    
+    
+    
     /**
      * @param args the command line arguments
      */
@@ -546,7 +712,7 @@ public class AltaTitular extends javax.swing.JFrame {
     private javax.swing.JTextField txtCalle;
     private javax.swing.JTextField txtDepto;
     private javax.swing.JTextField txtFactor;
-    private javax.swing.JTextField txtFechaDeNacimiento;
+    private javax.swing.JFormattedTextField txtFechaDeNacimiento;
     private javax.swing.JTextField txtGrupoSanguineo;
     private javax.swing.JTextField txtNombre;
     private javax.swing.JTextField txtNroDocumento;

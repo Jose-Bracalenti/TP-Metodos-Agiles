@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
 import messages.Util;
+import models.entities.Contribuyente;
 import models.entities.TipoDocumento;
 import models.entities.Titular;
 
@@ -23,6 +24,18 @@ import models.entities.Titular;
 public class GestorTitular {
     EntityManager manager = UtilHibernate.getInstance().getEntityManager();
     TitularDAOImpl titularImpl = new TitularDAOImpl();
+    
+    
+    
+    public TitularDTO altaTitular(Titular titular){
+        try {
+            titularImpl.altaTitular(titular);
+            TitularDTO titularDTO = pasarADTO(titular);
+            return buscarTitularDTO(titularDTO).get(0);
+        } catch (Exception e) {
+            return null;
+        }
+    }
     
     
     public TitularDTO pasarADTO(Titular titular){
@@ -77,5 +90,13 @@ public class GestorTitular {
     
     public List<TipoDocumento> mostrarTipos(){
         return titularImpl.buscarAllTipoDoc();
+    }
+    
+    public Contribuyente buscarContribuyente(String numeroDoc, String tipoDoc){
+        try {
+            return titularImpl.buscarContribuynete(numeroDoc, tipoDoc).get(0);
+        } catch (Exception e) {
+            return null;
+        }
     }
 }

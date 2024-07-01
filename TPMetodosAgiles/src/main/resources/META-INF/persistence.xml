@@ -5,6 +5,7 @@
     <!-- Definicion de Clases -->
     <class>models.entities.Domicilio</class>
     <class>models.entities.Titular</class>
+    <class>models.entities.Contribuyente</class>
     <class>models.entities.TipoDocumento</class>
     <class>models.entities.Licencia</class>
     <class>models.entities.HistoricoLicencia</class>
