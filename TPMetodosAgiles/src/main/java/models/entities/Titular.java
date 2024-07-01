@@ -21,7 +21,7 @@ N1 -> TipoDocumento
 
 @Entity
 @Table (name = "Titular")
-class Titular implements Serializable{
+public class Titular implements Serializable{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column (name = "id")
@@ -37,8 +37,8 @@ class Titular implements Serializable{
     @Column(name = "sexo")
     private SexoEnum sexo;
     
-    @Column (name = "numeroDocumento")
-    private String nroDocumento;
+    @Column (name = "numerodocumento")
+    private String numerodocumento;
     
     @Column(name = "cuil")
     private String cuil;
@@ -68,17 +68,20 @@ class Titular implements Serializable{
     
     @OneToMany (mappedBy = "titular")
     private List<Licencia> licencias = new ArrayList();
+    
+    @OneToMany (mappedBy = "titular")
+    private List<HistoricoLicencia> historicos = new ArrayList();
 
     //Constructores
     public Titular() {
     }
 
-    public Titular(int id, String nombre, String apellido, SexoEnum sexo, String nroDocumento, String cuil, Date fechaNacimiento, GrupoSanguineoEnum grupoSanguineo, FactorRHEnum factorRH, Boolean donanteDeOrganos, Domicilio domicilio, TipoDocumento tipoDocumento) {
+    public Titular(int id, String nombre, String apellido, SexoEnum sexo, String numerodocumento, String cuil, Date fechaNacimiento, GrupoSanguineoEnum grupoSanguineo, FactorRHEnum factorRH, Boolean donanteDeOrganos, Domicilio domicilio, TipoDocumento tipoDocumento) {
         this.id = id;
         this.nombre = nombre;
         this.apellido = apellido;
         this.sexo = sexo;
-        this.nroDocumento = nroDocumento;
+        this.numerodocumento = numerodocumento;
         this.cuil = cuil;
         this.fechaNacimiento = fechaNacimiento;
         this.grupoSanguineo = grupoSanguineo;
@@ -122,11 +125,11 @@ class Titular implements Serializable{
     }
 
     public String getNumeroDocumento() {
-        return nroDocumento;
+        return numerodocumento;
     }
 
     public void setNumeroDocumento(String nroDocumento) {
-        this.nroDocumento = nroDocumento;
+        this.numerodocumento = nroDocumento;
     }
 
     public String getCuil() {

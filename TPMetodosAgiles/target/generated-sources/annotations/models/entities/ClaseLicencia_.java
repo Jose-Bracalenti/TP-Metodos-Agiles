@@ -6,9 +6,9 @@ import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
 import models.entities.Licencia;
 
-@Generated(value="EclipseLink-2.5.2.v20140319-rNA", date="2024-06-11T19:14:41")
+@Generated(value="EclipseLink-2.5.2.v20140319-rNA", date="2024-07-01T13:02:29")
 @StaticMetamodel(ClaseLicencia.class)
- class ClaseLicencia_ { 
+public class ClaseLicencia_ { 
 
     public static volatile SingularAttribute<ClaseLicencia, Integer> id;
     public static volatile SingularAttribute<ClaseLicencia, String> especificacion;

@@ -6,7 +6,7 @@ import javax.persistence.metamodel.StaticMetamodel;
 import models.entities.RolEnum;
 import models.entities.TipoDocumento;
 
-@Generated(value="EclipseLink-2.5.2.v20140319-rNA", date="2024-06-11T19:14:41")
+@Generated(value="EclipseLink-2.5.2.v20140319-rNA", date="2024-07-01T13:02:29")
 @StaticMetamodel(Usuario.class)
 public class Usuario_ { 
 

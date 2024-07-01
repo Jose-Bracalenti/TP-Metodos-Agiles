@@ -3,14 +3,16 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package views;
+package Views;
 
-import controllers.GestorUsuario;
+import Controllers.GestorUsuario;
 import dto.UsuarioDTO;
 import messages.Util;
 import dto.UsuarioDTO;
-import javax.persistence.EntityManager;
+import java.awt.Color;
+import javax.swing.BorderFactory;
 import javax.swing.JOptionPane;
+import javax.swing.border.Border;
 import messages.Util;
 
 /**
@@ -20,26 +22,51 @@ import messages.Util;
 public class Inicio extends javax.swing.JFrame {
 
     GestorUsuario gestorUsuario = new GestorUsuario();
+    
+    //Bordes de los TXT y del Box para pintarlos
+    Border redBorder = BorderFactory.createLineBorder(Color.RED, 2);
+    Border originalTXTBorder;
+    Border originalBOXBorder;
     /**
      * Creates new form Inicio
      */
     public Inicio() {
         initComponents();
+        //Inicializacion de los bordes originales
+       originalTXTBorder  = txtNroDocumento.getBorder();
+       originalBOXBorder = boxRol.getBorder();
     }
     
-    public Inicio (EntityManager entityManager){
-        initComponents();
-    }
     
     //Funcion para comprobar que un string es un numero
     public boolean isInteger(String numero){
-    try{
-        Integer.parseInt(numero);
-        return true;
-    }catch(NumberFormatException e){
-        return false;
+        try{
+            Integer.parseInt(numero);
+            return true;
+        }catch(NumberFormatException e){
+            return false;
+        }
     }
-}
+    
+    
+    //Funcion que pinta de rojo los TXT y el Box en caso de que sena invalidos
+    public void pintarInvalidos(String nroDocumento, String contrasenia, boolean no_esta){
+        if(nroDocumento.isEmpty() || !isInteger(nroDocumento)|| no_esta){
+            txtNroDocumento.setBorder(redBorder);
+        } else {
+            txtNroDocumento.setBorder(originalTXTBorder);
+        }
+        if(contrasenia.isEmpty() || no_esta){
+            txtContrasenia.setBorder(redBorder);
+        } else {
+            txtContrasenia.setBorder(originalTXTBorder);
+        }
+        if(no_esta){
+            boxRol.setBorder(redBorder);
+        } else{
+            boxRol.setBorder(originalBOXBorder);
+        }
+    }
     
 
     /**
@@ -77,7 +104,7 @@ public class Inicio extends javax.swing.JFrame {
         jLabel_Contrasenia1.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jLabel_Contrasenia1.setText("Rol:");
 
-        boxRol.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        boxRol.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "OPERADOR", "ADMINISTRADOR" }));
         boxRol.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 boxRolActionPerformed(evt);
@@ -108,16 +135,15 @@ public class Inicio extends javax.swing.JFrame {
                         .addComponent(btnIngresar, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(106, 106, 106)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtContrasenia, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(txtNroDocumento, javax.swing.GroupLayout.DEFAULT_SIZE, 164, Short.MAX_VALUE)
-                                .addComponent(jLabel_Documento, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(jLabel_Contrasenia, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGroup(layout.createSequentialGroup()
-                                    .addComponent(jLabel_Contrasenia1)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                    .addComponent(boxRol, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(txtNroDocumento)
+                            .addComponent(jLabel_Documento, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel_Contrasenia, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel_Contrasenia1)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(boxRol, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(txtContrasenia))))
                 .addContainerGap(76, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -160,20 +186,24 @@ public class Inicio extends javax.swing.JFrame {
 
         //Corroboramos que no esten vacios
         if(nroDocumento.isEmpty() || contrasenia.isEmpty()){
+            pintarInvalidos(nroDocumento, contrasenia, false);
             Util.mensajeAdvertencia("Advertencia", "No se permiten campo/s vacío/s");
         //Corroboramos que solo haya numeros en nroDocumento
         } else if (!isInteger(nroDocumento)){
+            pintarInvalidos(nroDocumento, contrasenia, false);
             Util.mensajeAdvertencia("Advertencia", "Formato invalido");
         } else {    
             //Buscamos el usuario con ese nroDocumento, contrasenia y rol
             try {
                 UsuarioDTO usuarioDTO = gestorUsuario.buscarUsuario(nroDocumento, contrasenia, rol);
                 if(usuarioDTO != null){
-                    JOptionPane.showMessageDialog(null,"ESTA EN LA BASE"); 
+                    //Abrir menu principal ACA
                 } else {
-                    JOptionPane.showMessageDialog(null,"NO ESTA");
+                    Util.mensajeAdvertencia("Advertencia", "Nro. de documento, contraseña o rol incorrectos");
+                    pintarInvalidos(nroDocumento, contrasenia, true);
                 }
             } catch (Exception e) {
+                Util.mensajeError("Error", "Error al conectar en la base de datos");
             }
         }
             

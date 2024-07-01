@@ -17,7 +17,7 @@ import javax.persistence.*;
 
 @Entity
 @Table (name = "HistoricoLicencia")
-class HistoricoLicencia implements Serializable{
+public class HistoricoLicencia implements Serializable{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column (name = "id")
@@ -25,6 +25,9 @@ class HistoricoLicencia implements Serializable{
     
     @Column(name = "nroLicencia")
     private long nroLicencia;
+    
+    @Column (name = "clase")
+    private String clase;
     
     @Temporal(TemporalType.DATE)
     @Column(name = "fechaInicioVigencia")
@@ -37,16 +40,21 @@ class HistoricoLicencia implements Serializable{
     @ManyToOne (fetch = FetchType.EAGER)
     @JoinColumn (name = "id_Licencia")
     private Licencia licencia;
+    
+    @ManyToOne (fetch = FetchType.EAGER)
+    @JoinColumn (name = "id_titular")
+    private Titular titular;
 
     public HistoricoLicencia() {
     }
 
-    public HistoricoLicencia(int id, long nroLicencia, Date fechaInicioVigencia, Date fechaFinVigencia, Licencia licencia) {
+    public HistoricoLicencia(int id, long nroLicencia, Date fechaInicioVigencia, Date fechaFinVigencia, Licencia licencia, Titular titular) {
         this.id = id;
         this.nroLicencia = nroLicencia;
         this.fechaInicioVigencia = fechaInicioVigencia;
         this.fechaFinVigencia = fechaFinVigencia;
         this.licencia = licencia;
+        this.titular = titular;
     }
 
     public int getId() {
@@ -63,6 +71,14 @@ class HistoricoLicencia implements Serializable{
 
     public void setNroLicencia(long nroLicencia) {
         this.nroLicencia = nroLicencia;
+    }
+
+    public String getClase() {
+        return clase;
+    }
+
+    public void setClase(String clase) {
+        this.clase = clase;
     }
 
     public Date getFechaInicioVigencia() {
@@ -88,5 +104,15 @@ class HistoricoLicencia implements Serializable{
     public void setLicencia(Licencia licencia) {
         this.licencia = licencia;
     }
+
+    public Titular getTitular() {
+        return titular;
+    }
+
+    public void setTitular(Titular titular) {
+        this.titular = titular;
+    }
+    
+    
     
 }
