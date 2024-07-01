@@ -5,6 +5,7 @@ import controllers.GestorTitular;
 import dto.LicenciaDTO;
 import dto.TitularDTO;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -121,8 +122,7 @@ public class EmitirLicencia extends javax.swing.JFrame {
     public boolean validarClase(String clase){
         
         try{
-            boolean validez;
-            boolean restriccionVigencia=false;
+            boolean restriccionVigencia;
             boolean restriccionHistorico;
             if (clase.equals('A') || clase.equals('B') || clase.equals('F') || clase.equals('G')){
                 restriccionVigencia = true;
@@ -130,21 +130,37 @@ public class EmitirLicencia extends javax.swing.JFrame {
             }
             else{
                 titularDTO = gestorTitular.buscarTitularDTO(titularDTO).get(0);
-                List<LicenciaDTO> licenciaClaseB = gestorLicencia.buscarLicenciaDTOByTitularDTOyClase(titularDTO, "B");
-                List<HistoricoLicencia> historicoClaseB = gestorLicencia.buscarHistoricoByTitularDTOyClase(titularDTO, "B");
+                List<LicenciaDTO> licencias = gestorLicencia.buscarLicenciaByTitularDTO(titularDTO);
+                Titular titular = gestorTitular.buscarTitular(titularDTO).get(0);
+                List<HistoricoLicencia> historicoClaseB = gestorLicencia.buscarHistoricoByTitularDTOyClase(titular, "B");
+                List<LicenciaDTO> licenciasClaseB = new ArrayList();
+                for (LicenciaDTO licenciaDTO: licencias){
+                   if (licenciaDTO.getClase().getId()==2){
+                       licenciasClaseB.add(licenciaDTO);
+                   }
+                }
+              
                 //ACA SE CHEQUEA QUE LA PERSONA HAYA SACADO UNA LICENCIA DE CLASE B HACE 1 AÑO O MAS
-                if (!(licenciaClaseB.isEmpty())){
-                    if(calcularAnios(licenciaClaseB.get(0))>=1){
-                       restriccionVigencia = true;
+                if (!licenciasClaseB.isEmpty()){
+                    if(calcularAnios(licenciasClaseB.get(0))>=1){
+                        restriccionVigencia = true;
+                    }
+                    else{
+                        restriccionVigencia = false;
                     }
                 }
-                else if (!(historicoClaseB.isEmpty())){
-                    restriccionVigencia=true;
+                else {
+                    if (!historicoClaseB.isEmpty()){
+                        restriccionVigencia=true;
+                    }
+                    else{
+                        restriccionVigencia=false;
+                    }
                 }
                 
                 //ACA SE CHEQUEA QUE LA PERSONA, EN CASO DE TENER MAS DE 65 AÑOS YA HAYA SACADO UNA LICENCIA CLASE C, D o E    
                 if (calcularEdad()>65){
-                   if (gestorLicencia.buscarHistoricoByTitularDTOyClase(titularDTO, "C").isEmpty() && gestorLicencia.buscarHistoricoByTitularDTOyClase(titularDTO, "D").isEmpty() && gestorLicencia.buscarHistoricoByTitularDTOyClase(titularDTO, "E").isEmpty()){ //TENGO QUE TERMINAR LA FUNCION ESA DE BUSCAR HISTORICO
+                   if (gestorLicencia.buscarHistoricoByTitularDTOyClase(titular, "C").isEmpty() && gestorLicencia.buscarHistoricoByTitularDTOyClase(titular, "D").isEmpty() && gestorLicencia.buscarHistoricoByTitularDTOyClase(titular, "E").isEmpty()){ //TENGO QUE TERMINAR LA FUNCION ESA DE BUSCAR HISTORICO
                        restriccionHistorico=false;
                    }
                    else{
@@ -152,14 +168,16 @@ public class EmitirLicencia extends javax.swing.JFrame {
                     }
                 }
                 else{
+                    
                      restriccionHistorico=true;
                 }
             }
             return restriccionVigencia && restriccionHistorico;
             
         } catch (Exception e){
-            return false;
+            Util.mensajeError("Error: Validar Clase", "Hubo un error: \n" + e.getMessage());
         }
+        return false;
     }
     
     public Integer calcularEdad(){
@@ -546,8 +564,11 @@ public class EmitirLicencia extends javax.swing.JFrame {
                 //pantalla.setLocationRelativeTo(null);
                 this.dispose();
                 }
-                else{
+                else if (validarClase(clase)){
                     Mappers.Util.mensajeInformacion("Error", "El titular no cumple con la edad mínima requerida para licencias de esta clase");
+                }
+                else{
+                     Mappers.Util.mensajeInformacion("Error", "El titular no cumple con los requisitos para sacar licencias de esta clase");
                 }
             }
         } catch (ValidationException ve) {

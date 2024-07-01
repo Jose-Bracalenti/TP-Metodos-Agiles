@@ -8,14 +8,16 @@ import javax.persistence.metamodel.StaticMetamodel;
 import models.entities.Domicilio;
 import models.entities.FactorRHEnum;
 import models.entities.GrupoSanguineoEnum;
+import models.entities.HistoricoLicencia;
 import models.entities.Licencia;
 import models.entities.SexoEnum;
 import models.entities.TipoDocumento;
 
-@Generated(value="EclipseLink-2.5.2.v20140319-rNA", date="2024-06-28T00:24:33")
+@Generated(value="EclipseLink-2.5.2.v20140319-rNA", date="2024-07-01T13:02:29")
 @StaticMetamodel(Titular.class)
 public class Titular_ { 
 
+    public static volatile ListAttribute<Titular, HistoricoLicencia> historicos;
     public static volatile SingularAttribute<Titular, Boolean> donanteDeOrganos;
     public static volatile SingularAttribute<Titular, Date> fechaNacimiento;
     public static volatile SingularAttribute<Titular, String> numerodocumento;

@@ -13,6 +13,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import models.entities.HistoricoLicencia;
+import models.entities.Titular;
 
 /**
  *
@@ -24,7 +25,7 @@ public class HistoricoDAOImpl implements HistoricoDAO{
     @Override
     public List<HistoricoLicencia> buscarByTitularDTO (TitularDTO titularDTO){
         try{
-            String consulta = "SELECT h FROM HistoricoLicencia h WHERE h.id_Titular = :idTitular";
+            String consulta = "SELECT h FROM HistoricoLicencia h WHERE h.id_titular = :idTitular";
             TypedQuery<HistoricoLicencia> query = (TypedQuery<HistoricoLicencia>) entityManager.createQuery(consulta);
             query.setParameter("idTitular", titularDTO.getId());
             return query.getResultList();
@@ -34,11 +35,11 @@ public class HistoricoDAOImpl implements HistoricoDAO{
     }
     
     @Override
-    public List<HistoricoLicencia> buscarByTitularDTOyClase(TitularDTO titularDTO, String clase) {
+    public List<HistoricoLicencia> buscarByTitularDTOyClase(Titular titular, String clase) {
         try{
-            String consulta = "SELECT h FROM HistoricoLicencia h WHERE h.id_Titular = :idTitular AND h.clase = :clase";
+            String consulta = "SELECT h FROM HistoricoLicencia h WHERE h.clase = :clase AND h.titular.id = :idTitular";
             TypedQuery<HistoricoLicencia> query = (TypedQuery<HistoricoLicencia>) entityManager.createQuery(consulta);
-            query.setParameter("idTitular", titularDTO.getId());
+            query.setParameter("idTitular", titular.getId());
             query.setParameter("clase", clase);
             return query.getResultList();
         }catch(Exception e){

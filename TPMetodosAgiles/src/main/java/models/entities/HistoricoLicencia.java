@@ -42,7 +42,7 @@ public class HistoricoLicencia implements Serializable{
     private Licencia licencia;
     
     @ManyToOne (fetch = FetchType.EAGER)
-    @JoinColumn (name = "id_Titular")
+    @JoinColumn (name = "id_titular")
     private Titular titular;
 
     public HistoricoLicencia() {

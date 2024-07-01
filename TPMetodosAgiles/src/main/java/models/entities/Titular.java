@@ -68,6 +68,9 @@ public class Titular implements Serializable{
     
     @OneToMany (mappedBy = "titular")
     private List<Licencia> licencias = new ArrayList();
+    
+    @OneToMany (mappedBy = "titular")
+    private List<HistoricoLicencia> historicos = new ArrayList();
 
     //Constructores
     public Titular() {

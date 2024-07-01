@@ -8,6 +8,7 @@ package dao;
 import dto.TitularDTO;
 import java.util.List;
 import models.entities.HistoricoLicencia;
+import models.entities.Titular;
 
 /**
  *
@@ -15,5 +16,5 @@ import models.entities.HistoricoLicencia;
  */
 public interface HistoricoDAO {
     List<HistoricoLicencia> buscarByTitularDTO (TitularDTO titularDTO);
-    List<HistoricoLicencia> buscarByTitularDTOyClase(TitularDTO titularDTO, String clase);
+    List<HistoricoLicencia> buscarByTitularDTOyClase(Titular titular, String clase);
 }

@@ -19,6 +19,7 @@ import javax.persistence.EntityManager;
 import models.entities.ClaseLicencia;
 import models.entities.HistoricoLicencia;
 import models.entities.Licencia;
+import models.entities.Titular;
 
 /**
  *
@@ -74,25 +75,24 @@ public class GestorLicencia {
         return licenciaImpl.buscarByTitularDTO(titularDTO);
     }
 
-    public List<LicenciaDTO> buscarLicenciaDTO(TitularDTO titularDTO) {
+    public List<LicenciaDTO> buscarLicenciaByTitularDTO(TitularDTO titularDTO) {
         try{
             return  pasarListaADTO(licenciaImpl.buscarByTitularDTO(titularDTO));
         } catch(Exception e){
-            return null;
+            throw new MyValidationException("Error buscar Licencia by Titular", e);
         }
     }
     
-    public List<LicenciaDTO> buscarLicenciaDTOByTitularDTOyClase(TitularDTO titularDTO, String clase) {
+    /*public List<LicenciaDTO> buscarLicenciaDTOByTitularDTOyClase(TitularDTO titularDTO, Integer id_clase) {
         try{
-            return  pasarListaADTO(licenciaImpl.buscarByTitularDTOyClase(titularDTO, clase));
+            return  pasarListaADTO(licenciaImpl.buscarByTitularDTOyClase(titularDTO, id_clase));
         } catch(Exception e){
-            return null;
+            throw new MyValidationException("Error buscar Licencia by Titular and Clase", e);
         }
-    }
+    }*/
     
     private List<LicenciaDTO> pasarListaADTO(List<Licencia> licencias) {
         List<LicenciaDTO> licenciasDTO = new ArrayList();
-        
         for (Licencia licencia: licencias){
             licenciasDTO.add(pasarADTO(licencia));
         }
@@ -111,7 +111,7 @@ public class GestorLicencia {
         return historicoImpl.buscarByTitularDTO(titularDTO);
     }
     
-    public List<HistoricoLicencia> buscarHistoricoByTitularDTOyClase(TitularDTO titularDTO, String clase){
-        return historicoImpl.buscarByTitularDTOyClase(titularDTO, clase);
+    public List<HistoricoLicencia> buscarHistoricoByTitularDTOyClase(Titular titular, String clase){
+        return historicoImpl.buscarByTitularDTOyClase(titular, clase);
     }
 }

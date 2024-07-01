@@ -32,39 +32,27 @@ public class LicenciaDAOImpl implements LicenciaDAO{
     @Override
     public List<Licencia> buscarByTitularDTO(TitularDTO titularDTO) {
         try{
-            String consulta = "SELECT l FROM Licencia l JOIN Titular t ON l.id_titular = t.id WHERE t.numerodocumento = :numerodocumento";
+            String consulta = "SELECT l FROM Licencia l WHERE l.titular.id = :titular";
             TypedQuery<Licencia> query = (TypedQuery<Licencia>) entityManager.createQuery(consulta);
-            query.setParameter("numerodocumento", titularDTO.getNroDoc());
+            query.setParameter("titular", titularDTO.getId());
             return query.getResultList();
             
         } catch (Exception e){
             throw new MyValidationException("Error: Buscar Licencia", e);
         }
     }
-    @Override
-    public List<Licencia> buscarByTitularDTOyClase(TitularDTO titularDTO, String clase) {
-        try{
-            String consulta = "SELECT l FROM Licencia l JOIN Titular t ON l.id_titular = t.id WHERE t.numerodocumento = :numerodocumento AND l.clase = :clase";
-            TypedQuery<Licencia> query = (TypedQuery<Licencia>) entityManager.createQuery(consulta);
-            query.setParameter("numerodocumento", titularDTO.getNroDoc());
-            query.setParameter("clase", clase);
-            return query.getResultList();
-            
-        } catch (Exception e){
-            throw new MyValidationException("Error: Buscar Licencia", e);
-        }
-    }
-    
     /*@Override
-    public List<LicenciaDTO> buscarDTOByTitularDTO(TitularDTO titularDTO) {
+    public List<Licencia> buscarByTitularDTOyClase(TitularDTO titularDTO, Integer id_clase) {
         try{
-            String consulta = "SELECT l FROM Licencia l JOIN Titular t ON l.id_titular = t.id WHERE t.numerodocumento = :numerodocumento";
+            String consulta = "SELECT l FROM Licencia l WHERE l.titular.id = :titular AND l.claselicencia.id = :clase ";
             TypedQuery<Licencia> query = (TypedQuery<Licencia>) entityManager.createQuery(consulta);
-            query.setParameter("numerodocumento", titularDTO.getNroDoc());
-            //return query.getResultList();
+            query.setParameter("titular", titularDTO.getId());
+            query.setParameter("clase", id_clase);
+            return query.getResultList();
             
         } catch (Exception e){
             throw new MyValidationException("Error: Buscar Licencia", e);
         }
     }*/
+    
 }
