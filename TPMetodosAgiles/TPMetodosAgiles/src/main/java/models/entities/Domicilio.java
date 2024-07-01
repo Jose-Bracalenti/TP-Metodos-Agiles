@@ -32,7 +32,7 @@ public class Domicilio implements Serializable{
     private String departamento;
     
     @OneToMany(mappedBy="domicilio")
-    private List<Titular> titulares = new ArrayList();
+    private List<Titular> titulares;
 
     //Constructores
     
