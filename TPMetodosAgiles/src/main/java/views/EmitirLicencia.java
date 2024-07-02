@@ -583,6 +583,14 @@ public class EmitirLicencia extends javax.swing.JFrame {
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
         try {
             if ( Mappers.Util.mensajeConfirmacion("Confirmación", "¿Está seguro que desea salir?") ){
+                if (gestorLicencia.buscarHistorico(titularDTO).isEmpty() && gestorLicencia.buscarLicencia(titularDTO).isEmpty()){
+                    Titular titular = gestorTitular.buscarTitular(titularDTO).get(0);
+                    gestorTitular.eliminarTitular(titularDTO);
+                    if (titular.getDomicilio()!=null && gestorTitular.buscarTitularByDireccion(titular.getDomicilio()).isEmpty()){
+                        gestorTitular.eliminarDomicilio(titular.getDomicilio());
+                    }
+                    Mappers.Util.mensajeInformacion("Exito", "Se ha borrado el titular con éxito, ya que el mismo no tenia asociada ninguna licencia vigente o vencida");
+                }
                 this.setVisible(false);
                 this.dispose();
             }

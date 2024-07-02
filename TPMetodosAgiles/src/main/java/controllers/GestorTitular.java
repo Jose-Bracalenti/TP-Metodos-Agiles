@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
 import messages.Util;
+import models.entities.Domicilio;
 import models.entities.TipoDocumento;
 import models.entities.Titular;
 
@@ -28,6 +29,7 @@ public class GestorTitular {
     public TitularDTO pasarADTO(Titular titular){
         TitularDTO titularDTO = new TitularDTO();
         
+        titularDTO.setId(titular.getId());
         titularDTO.setNombre(titular.getNombre());
         titularDTO.setApellido(titular.getApellido());
         titularDTO.setNroDoc(titular.getNumeroDocumento());
@@ -72,6 +74,30 @@ public class GestorTitular {
             return titularImpl.buscarTipoDoc(especificacion).get(0);
         } catch(Exception e){
             throw new MyValidationException("Error buscarTipoDoc", e);
+        }
+    }
+
+    public void eliminarTitular(TitularDTO titularDTO) {
+        try{
+            titularImpl.eliminarTitular(titularDTO);
+        }catch(Exception e){
+            throw new MyValidationException("Error al eliminar el titular",e);
+        }
+    }
+
+    public List<Titular> buscarTitularByDireccion(Domicilio domicilio) {
+        try{
+            return titularImpl.buscarTitularByDireccion(domicilio);
+        } catch(Exception e){
+            throw new MyValidationException("Error buscar titular por direccion", e);
+        }
+    }
+
+    public void eliminarDomicilio(Domicilio domicilio) {
+         try{
+            titularImpl.eliminarDomicilio(domicilio);
+        }catch(Exception e){
+            throw new MyValidationException("Error al eliminar el titular",e);
         }
     }
 }

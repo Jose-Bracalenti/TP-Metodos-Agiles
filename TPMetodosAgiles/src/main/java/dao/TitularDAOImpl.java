@@ -10,8 +10,10 @@ import Mappers.UtilHibernate;
 import dto.TitularDTO;
 import java.util.List;
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.swing.JOptionPane;
+import models.entities.Domicilio;
 import models.entities.TipoDocumento;
 import models.entities.Titular;
 
@@ -78,6 +80,47 @@ public class TitularDAOImpl implements TitularDAO{
                 throw new MyValidationException("Error: BuscarTipoDoc DAO", e);
         }
                 
+    }
+    
+    @Override
+    public void eliminarTitular(TitularDTO titularDTO) {
+        try{
+            entityManager.getTransaction().begin();
+            String consulta = "DELETE FROM Titular t WHERE t.id = :idTitular";
+            Query query = entityManager.createQuery(consulta);
+            query.setParameter("idTitular", titularDTO.getId());
+            int result = query.executeUpdate(); //se supone que es para ver cuantas filas se borraron
+            entityManager.getTransaction().commit();
+        } catch (Exception e){
+            throw new MyValidationException("Error: Eliminar Titular", e);
+        }
+    }
+    
+    @Override
+    public List<Titular> buscarTitularByDireccion(Domicilio domicilio) {
+        try{
+                String consulta = "SELECT t FROM Titular t WHERE t.domicilio.id = :idDomicilio";
+                TypedQuery<Titular> query = (TypedQuery<Titular>) entityManager.createQuery(consulta);
+                query.setParameter("idDomicilio", domicilio.getId());
+                return query.getResultList();
+                
+        } catch (Exception e){
+                throw new MyValidationException("Error: Buscar titular por direccion", e);
+        }
+    }
+    
+    @Override
+    public void eliminarDomicilio(Domicilio domicilio) {
+        try{
+            entityManager.getTransaction().begin();
+            String consulta = "DELETE FROM Domicilio d WHERE d.id = :idDomicilio";
+            Query query = entityManager.createQuery(consulta);
+            query.setParameter("idDomicilio", domicilio.getId());
+            int result = query.executeUpdate(); //se supone que es para ver cuantas filas se borraron
+            entityManager.getTransaction().commit();
+        } catch (Exception e){
+            throw new MyValidationException("Error: Eliminar Titular", e);
+        }
     }
     
 }

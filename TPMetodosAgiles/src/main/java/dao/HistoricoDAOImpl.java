@@ -25,7 +25,7 @@ public class HistoricoDAOImpl implements HistoricoDAO{
     @Override
     public List<HistoricoLicencia> buscarByTitularDTO (TitularDTO titularDTO){
         try{
-            String consulta = "SELECT h FROM HistoricoLicencia h WHERE h.id_titular = :idTitular";
+            String consulta = "SELECT h FROM HistoricoLicencia h WHERE h.titular.id = :idTitular";
             TypedQuery<HistoricoLicencia> query = (TypedQuery<HistoricoLicencia>) entityManager.createQuery(consulta);
             query.setParameter("idTitular", titularDTO.getId());
             return query.getResultList();

@@ -7,7 +7,7 @@ import javax.persistence.metamodel.StaticMetamodel;
 import models.entities.Licencia;
 import models.entities.Titular;
 
-@Generated(value="EclipseLink-2.5.2.v20140319-rNA", date="2024-07-01T13:02:29")
+@Generated(value="EclipseLink-2.5.2.v20140319-rNA", date="2024-07-01T21:11:15")
 @StaticMetamodel(HistoricoLicencia.class)
 public class HistoricoLicencia_ { 
 

@@ -16,9 +16,9 @@ public class App {
             
             //cargadorDatos.cargarDatos(manager);
            TitularDTO titularDTO = new TitularDTO();
-           titularDTO.setNombre("Lionel");
-           titularDTO.setApellido("Messi");
-           titularDTO.setNroDoc("44222333");
+           titularDTO.setNombre("Cristiano");
+           titularDTO.setApellido("Ronaldo");
+           titularDTO.setNroDoc("12345678");
            pantalla = new EmitirLicencia(titularDTO);
            pantalla.setVisible(true);
            pantalla.setLocationRelativeTo(null);
